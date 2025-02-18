@@ -5,7 +5,10 @@ import org.bson.types.Binary
 import org.springframework.core.io.buffer.DefaultDataBufferFactory
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate
 import org.springframework.data.mongodb.gridfs.ReactiveGridFsTemplate
+import org.springframework.http.MediaType
+import org.springframework.http.MediaTypeFactory
 import org.springframework.stereotype.Service
+import org.springframework.util.MimeType
 import reactor.core.publisher.Flux
 
 @Service
@@ -26,9 +29,10 @@ class UploadService(
     }
 
     private suspend fun storeInDocument(fileName: String, fileBytes: ByteArray): String {
+        val mediaType = extractContentType(fileName)
         val fileDocument = FileDocument(
             fileName = fileName,
-            contentType = "application/octet-stream", // 필요 시 적절한 MIME 타입 지정
+            contentType = mediaType,
             fileData = Binary(fileBytes),
         )
         val saved = mongoTemplate.save(fileDocument).awaitSingle()
@@ -38,8 +42,13 @@ class UploadService(
     private suspend fun storeInGridFs(fileName: String, fileBytes: ByteArray): String {
         val factory = DefaultDataBufferFactory()
         val dataBuffer = factory.wrap(fileBytes)
-        val storedId = gridFsTemplate.store(Flux.just(dataBuffer), fileName, "application/octet-stream")
+        val storedId = gridFsTemplate.store(Flux.just(dataBuffer), fileName, fileName.substringAfterLast("."))
             .awaitSingle()
         return storedId.toString()
     }
+
+    private suspend fun extractContentType(fileName: String): String =
+        MediaTypeFactory.getMediaType(fileName)
+            .orElse(MediaType.APPLICATION_OCTET_STREAM)
+            .toString()
 }

@@ -19,11 +19,8 @@ class UploadController(
     private val uploadService: UploadService,
 ) : FileUploadServiceImplBase() {
     override fun uploadFileStream(responseObserver: StreamObserver<FileUploadResponse>): StreamObserver<FileUploadChunk>? {
-        CoroutineScope(Dispatchers.IO).launch {
-            responseObserver.onNext(FileUploadResponse.newBuilder().setMessage("dd").build())
-            responseObserver.onCompleted()
-        }
-        TODO()
+        CoroutineScope(Dispatchers.IO).launch {}
+        TODO("stream 처리가 필요하다면 추가한다")
     }
 
     override fun uploadFile(request: FileUploadRequest, responseObserver: StreamObserver<FileUploadResponse>) {
