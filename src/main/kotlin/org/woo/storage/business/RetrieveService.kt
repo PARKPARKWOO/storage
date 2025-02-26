@@ -1,10 +1,10 @@
-package org.woo.storage
+package org.woo.storage.business
 
-import kotlinx.coroutines.reactive.awaitFirst
 import kotlinx.coroutines.reactive.awaitSingle
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate
 import org.springframework.stereotype.Service
+import org.woo.storage.domain.FileDocument
 
 @Service
 class RetrieveService(

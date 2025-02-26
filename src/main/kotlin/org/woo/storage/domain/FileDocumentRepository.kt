@@ -1,4 +1,4 @@
-package org.woo.storage
+package org.woo.storage.domain
 
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository
 

@@ -5,3 +5,8 @@ spring:
   data:
     mongodb:
       uri: mongodb://root:1234@localhost:27017/file?authSource=admin
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka

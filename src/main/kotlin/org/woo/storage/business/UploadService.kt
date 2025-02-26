@@ -1,4 +1,4 @@
-package org.woo.storage
+package org.woo.storage.business
 
 import kotlinx.coroutines.reactive.awaitSingle
 import org.bson.types.Binary
@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.gridfs.ReactiveGridFsTemplate
 import org.springframework.http.MediaType
 import org.springframework.http.MediaTypeFactory
 import org.springframework.stereotype.Service
-import org.springframework.util.MimeType
+import org.woo.storage.domain.FileDocument
 import reactor.core.publisher.Flux
 
 @Service

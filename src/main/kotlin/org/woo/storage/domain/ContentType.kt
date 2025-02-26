@@ -1,6 +1,4 @@
-package org.woo.storage
-
-import org.springframework.util.MimeType
+package org.woo.storage.domain
 
 enum class ContentType(
 //    val mimeType: MimeType,
