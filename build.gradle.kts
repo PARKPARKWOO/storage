@@ -46,6 +46,11 @@ dependencies {
     // mysql
     runtimeOnly("com.mysql:mysql-connector-j")
     implementation("io.asyncer:r2dbc-mysql:1.3.0")
+    implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
+
+    // flyway for db migration
+    implementation("org.flywaydb:flyway-core:10.19.0")
+    implementation("org.flywaydb:flyway-mysql:10.19.0")
 
     implementation("org.woo:grpc:0.1.3")
     implementation("io.grpc:grpc-netty-shaded:$grpcVersion")
@@ -58,6 +63,9 @@ dependencies {
     }
 
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
+
+    // custom
+    implementation("org.woo:util:0.0.1")
 }
 
 extra["springCloudVersion"] = "2023.0.0"

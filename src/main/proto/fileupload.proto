@@ -17,20 +17,23 @@ message FileUploadResponse {
   string message = 1;
 }
 
+message FileMetadata {
+  int32 chunkSize = 1;
+  int32 offset = 2;
+  int64 fileSize = 3;
+}
+
 // Streaming 방식 (청크 단위 업로드)
 message FileUploadChunk {
   // 첫 청크에 파일, applicationId 이름 포함 (후속 청크는 비워도 됨)
   string applicationId = 1;
   string fileName = 2;
-  //
   bytes chunkData = 3;
   bool isLastChunk = 4;
 }
 
 service FileUploadService {
-  // 단일 메시지 업로드
   rpc uploadFile(FileUploadRequest) returns (FileUploadResponse);
 
-  // 스트리밍 업로드 (클라이언트 스트리밍)
   rpc uploadFileStream(stream FileUploadChunk) returns (stream FileUploadResponse);
 }

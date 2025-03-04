@@ -1,4 +1,4 @@
-package org.woo.storage.domain
+package org.woo.storage.domain.file
 
 import org.bson.types.Binary
 import org.springframework.data.annotation.Id

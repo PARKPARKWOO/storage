@@ -2,22 +2,37 @@ package org.woo.storage.business
 
 import kotlinx.coroutines.reactive.awaitSingle
 import org.bson.types.Binary
+import org.springframework.core.io.ByteArrayResource
+import org.springframework.core.io.Resource
 import org.springframework.core.io.buffer.DefaultDataBufferFactory
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate
+import org.springframework.data.mongodb.core.query.Query
 import org.springframework.data.mongodb.gridfs.ReactiveGridFsTemplate
 import org.springframework.http.MediaType
 import org.springframework.http.MediaTypeFactory
 import org.springframework.stereotype.Service
-import org.woo.storage.domain.FileDocument
+import org.woo.storage.domain.file.FileDocument
 import reactor.core.publisher.Flux
 
 @Service
-class UploadService(
-    private val gridFsTemplate: ReactiveGridFsTemplate,
-    private val mongoTemplate: ReactiveMongoTemplate,
+class FileDocumentService(
+    val mongoTemplate: ReactiveMongoTemplate,
+    val gridFsTemplate: ReactiveGridFsTemplate,
 ) {
     companion object {
         private const val FILE_SIZE_THRESHOLD: Long = 1048576
+    }
+
+    suspend fun findById(id: String):Resource {
+        val fileDocument = mongoTemplate.findById(id, FileDocument::class.java).awaitSingle()
+        // FileDocument에서 파일 데이터(byte array) 추출
+        val fileBytes: ByteArray = fileDocument.fileData.data
+        val objectId = gridFsTemplate.find(Query()).awaitSingle()
+        // ByteArrayResource로 변환 (Spring Resource)
+        val resource = ByteArrayResource(fileBytes)
+
+        val mimeType = fileDocument.contentType.ifEmpty { "application/octet-stream" }
+        return resource
     }
 
     suspend fun storeFile(fileName: String, fileBytes: ByteArray): String {

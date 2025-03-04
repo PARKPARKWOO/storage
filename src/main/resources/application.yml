@@ -11,6 +11,18 @@ spring:
       uri: mongodb://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@${MONGODB_HOST}:27017/file?authSource=admin
   profiles:
     active: dev
+  r2dbc:
+    url: r2dbc:mysql://${mysql.host}:3306/storage
+    username: ${RDBMS_USERNAME}
+    password: ${RDBMS_PASSWORD}
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    baseline-version: 0
+    url: jdbc:mysql://${mysql.host}:3306/auth
+    user: ${spring.r2dbc.username}
+    password: ${spring.r2dbc.password}
+    locations: classpath:db/migration
 
 grpc:
   server:
@@ -26,3 +38,6 @@ eureka:
       defaultZone: ${EUREKA_URI}
   instance:
     prefer-ip-address: false
+
+mysql:
+  host: ${RDBMS_URL}
