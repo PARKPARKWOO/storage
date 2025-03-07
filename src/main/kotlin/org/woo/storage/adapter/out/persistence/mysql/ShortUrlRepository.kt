@@ -1,4 +1,4 @@
-package org.woo.storage.domain
+package org.woo.storage.adapter.out.persistence.mysql
 
 import org.springframework.data.repository.reactive.ReactiveCrudRepository
 import org.woo.storage.domain.short_url.ShortUrl

@@ -1,9 +1,9 @@
-package org.woo.storage.business
+package org.woo.storage.application
 
 import kotlinx.coroutines.reactive.awaitSingle
 import kotlinx.coroutines.reactor.awaitSingleOrNull
 import org.springframework.stereotype.Service
-import org.woo.storage.domain.ShortUrlRepository
+import org.woo.storage.adapter.out.persistence.mysql.ShortUrlRepository
 import org.woo.util.generator.ShortUrl
 import org.woo.storage.domain.short_url.ShortUrl as ShortUrlEntity
 

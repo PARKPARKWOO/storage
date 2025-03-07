@@ -1,4 +1,4 @@
-package org.woo.storage.presentation.grpc
+package org.woo.storage.adapter.`in`.grpc
 
 import com.example.grpc.fileupload.FileUploadChunk
 import com.example.grpc.fileupload.FileUploadRequest
@@ -9,11 +9,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.devh.boot.grpc.server.service.GrpcService
-import org.woo.storage.business.UploadFacade
+import org.woo.storage.ports.`in`.UploadUseCase
 
 @GrpcService
 class UploadController(
-    private val uploadFacade: UploadFacade,
+    private val uploadUseCase: UploadUseCase
 ) : FileUploadServiceImplBase() {
     override fun uploadFileStream(responseObserver: StreamObserver<FileUploadResponse>): StreamObserver<FileUploadChunk>? {
         CoroutineScope(Dispatchers.IO).launch {}
@@ -22,9 +22,9 @@ class UploadController(
 
     override fun uploadFile(request: FileUploadRequest, responseObserver: StreamObserver<FileUploadResponse>) {
         CoroutineScope(Dispatchers.IO).launch {
-            val id = uploadFacade.storeFile(
+            val id = uploadUseCase.upload(
                 fileName = request.fileName,
-                fileBytes = request.fileData.toByteArray()
+                fileData = request.fileData.toByteArray()
             )
             val response = FileUploadResponse.newBuilder()
                 .setMessage(id.toString())

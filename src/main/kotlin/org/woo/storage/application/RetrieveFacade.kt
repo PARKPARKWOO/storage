@@ -1,10 +1,10 @@
-package org.woo.storage.business
+package org.woo.storage.application
 
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import org.springframework.core.io.Resource
 import org.springframework.stereotype.Service
-import org.springframework.util.MimeType
+import org.woo.storage.domain.metadata.Metadata
 
 @Service
 class RetrieveFacade(
@@ -13,7 +13,7 @@ class RetrieveFacade(
     private val metadataService: MetadataService,
 
     ) {
-    suspend fun retrieveResource(path: String): Pair<Resource, MimeType> = coroutineScope {
+    suspend fun retrieveResource(path: String): Pair<Resource, Metadata> = coroutineScope {
         val resourceId = shortUrlService.getResourceId(path)
 
         val metadataJob = async {
@@ -22,7 +22,6 @@ class RetrieveFacade(
         val resourceJob = async {
             fileDocumentService.findById(resourceId)
         }
-        MimeType.
         Pair(resourceJob.await(), metadataJob.await())
     }
 }
