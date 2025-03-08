@@ -3,7 +3,6 @@ package org.woo.storage.domain.metadata
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
-import org.woo.storage.domain.ContentType
 
 @Table("metadata_type")
 class MetadataType(

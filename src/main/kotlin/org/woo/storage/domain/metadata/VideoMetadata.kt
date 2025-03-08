@@ -9,12 +9,16 @@ import java.time.LocalDateTime
 class VideoMetadata(
     @Id
     @Column("resource_id")
-    override val resourceId: String,
+    override val fileId: Long,
     @Column("content_length")
     override val contentLength: Long,
     @Column("content_type")
     override val contentType: String,
-    override val createdAt: LocalDateTime = LocalDateTime.now(),
-    override val fileName: String
+    @Column("uploaded_at")
+    override val uploadedAt: LocalDateTime = LocalDateTime.now(),
+    @Column("file_name")
+    override val fileName: String,
+    @Column("uploaded_by")
+    override val uploadedBy: String
 ): Metadata {
 }

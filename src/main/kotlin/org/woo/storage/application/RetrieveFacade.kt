@@ -20,7 +20,8 @@ class RetrieveFacade(
             metadataService.getMetadata(resourceId)
         }
         val resourceJob = async {
-            fileDocumentService.findById(resourceId)
+//            fileDocumentService.findById(resourceId)
+            TODO()
         }
         Pair(resourceJob.await(), metadataJob.await())
     }

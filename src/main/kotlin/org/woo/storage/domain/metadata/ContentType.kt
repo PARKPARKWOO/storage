@@ -1,4 +1,4 @@
-package org.woo.storage.domain
+package org.woo.storage.domain.metadata
 
 enum class ContentType(
 //    val mimeType: MimeType,

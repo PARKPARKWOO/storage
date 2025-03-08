@@ -9,13 +9,17 @@ import java.time.LocalDateTime
 @Table("image_metadata")
 class ImageMetadata(
     @Id
-    @Column("resource_id")
-    override val resourceId: String,
+    @Column("file_id")
+    override val fileId: Long,
     @Column("content_length")
     override val contentLength: Long,
     @Column("content_type")
     override val contentType: String,
-    override val createdAt: LocalDateTime = LocalDateTime.now(),
+    @Column("uploaded_at")
+    override val uploadedAt: LocalDateTime = LocalDateTime.now(),
+    @Column("file_name")
     override val fileName: String,
+    @Column("uploaded_by")
+    override val uploadedBy: String,
 ) : Metadata {
 }

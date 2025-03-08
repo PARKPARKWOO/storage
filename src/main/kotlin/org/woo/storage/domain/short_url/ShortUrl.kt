@@ -1,7 +1,6 @@
 package org.woo.storage.domain.short_url
 
 import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.index.Indexed
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
 import org.woo.util.generator.ShortUrl

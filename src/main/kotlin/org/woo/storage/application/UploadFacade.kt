@@ -10,13 +10,9 @@ class UploadFacade(
     private val fileDocumentService: FileDocumentService,
     private val metadataService: MetadataService,
 ): UploadUseCase {
-    override suspend fun upload(fileData: ByteArray, fileName: String): Unit = coroutineScope {
-        async {
+    override suspend fun upload(fileData: ByteArray): Unit = coroutineScope {
             fileDocumentService.storeFile(fileData)
-        }
-
-        async {
-            me
-        }
     }
+
+    override suspend fun metadata(fineName: String) = coroutineScope { metadataService.save(fineName) }
 }

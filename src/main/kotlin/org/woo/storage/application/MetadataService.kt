@@ -4,7 +4,7 @@ import kotlinx.coroutines.reactive.awaitSingle
 import org.springframework.http.MediaType
 import org.springframework.http.MediaTypeFactory
 import org.springframework.stereotype.Service
-import org.woo.storage.domain.ContentType
+import org.woo.storage.domain.metadata.ContentType
 import org.woo.storage.adapter.out.persistence.mysql.FileMetadataRepository
 import org.woo.storage.adapter.out.persistence.mysql.ImageMetadataRepository
 import org.woo.storage.adapter.out.persistence.mysql.MetadataTypeRepository
