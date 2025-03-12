@@ -8,7 +8,7 @@ import org.springframework.data.relational.core.mapping.Table
 class MetadataType(
     @Id
     @Column("resource_id")
-    val resourceId: String? = null,
+    val resourceId: Long = 0,
     @Column("type")
     val type: String,
 ) {

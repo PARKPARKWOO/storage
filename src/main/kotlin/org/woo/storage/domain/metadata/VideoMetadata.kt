@@ -19,6 +19,10 @@ class VideoMetadata(
     @Column("file_name")
     override val fileName: String,
     @Column("uploaded_by")
-    override val uploadedBy: String
+    override val uploadedBy: String,
+    @Column("chunk_size")
+    override val chunkSize: Int,
+    @Column("application_id")
+    override val applicationId: Long,
 ): Metadata {
 }

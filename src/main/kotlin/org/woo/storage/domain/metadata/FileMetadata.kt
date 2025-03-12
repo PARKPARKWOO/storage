@@ -10,7 +10,7 @@ import java.time.LocalDateTime
 class FileMetadata(
     @Id
     @Column("file_id")
-    override val fileId: Long,
+    override val fileId: Long = 0L,
     @Column("content_length")
     override val contentLength: Long,
     @Column("content_type")
@@ -21,5 +21,9 @@ class FileMetadata(
     override val fileName: String,
     @Column("uploaded_by")
     override val uploadedBy: String,
+    @Column("chunk_size")
+    override val chunkSize: Int,
+    @Column("application_id")
+    override val applicationId: Long,
 ) : Metadata {
 }

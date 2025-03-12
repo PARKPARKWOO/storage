@@ -11,8 +11,7 @@ class RetrieveFacade(
     private val fileDocumentService: FileDocumentService,
     private val shortUrlService: ShortUrlService,
     private val metadataService: MetadataService,
-
-    ) {
+) {
     suspend fun retrieveResource(path: String): Pair<Resource, Metadata> = coroutineScope {
         val resourceId = shortUrlService.getResourceId(path)
 
@@ -20,8 +19,8 @@ class RetrieveFacade(
             metadataService.getMetadata(resourceId)
         }
         val resourceJob = async {
-//            fileDocumentService.findById(resourceId)
-            TODO()
+            fileDocumentService.findById(resourceId.toLong(), 0)
+//            TODO()
         }
         Pair(resourceJob.await(), metadataJob.await())
     }

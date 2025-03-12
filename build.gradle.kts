@@ -60,6 +60,7 @@ dependencies {
         exclude(group = "io.grpc", module = "grpc-protobuf")
 //        exclude(group = "io.grpc", module = "grpc-")
     }
+    implementation("io.grpc:grpc-kotlin-stub:1.4.1")
 
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
 
@@ -68,6 +69,9 @@ dependencies {
 
     // cassandra
     implementation("org.springframework.boot:spring-boot-starter-data-cassandra-reactive")
+
+    // tsid
+    implementation("io.hypersistence:hypersistence-tsid:2.1.4")
 }
 
 extra["springCloudVersion"] = "2023.0.0"
@@ -96,11 +100,15 @@ protobuf {
         id("grpc") {
             artifact = "io.grpc:protoc-gen-grpc-java:$grpcVersion"
         }
+        id("grpckt") {
+            artifact = "io.grpc:protoc-gen-grpc-kotlin:1.2.0:jdk7@jar"
+        }
     }
     generateProtoTasks {
         ofSourceSet("main").forEach {
             it.plugins {
                 id("grpc") { }
+                id("grpckt") {}
             }
         }
     }

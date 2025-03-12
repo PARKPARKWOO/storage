@@ -10,26 +10,27 @@ package fileupload;
 message FileUploadRequest {
   string fileName = 1;
   bytes fileData = 2;
-  string applicationId = 3;
+  int64 applicationId = 3;
+  string uploadedBy = 4;
+  int64 contentLength = 5;
 }
 
 message FileUploadResponse {
-  string message = 1;
+  int64 message = 1;
 }
 
-message FileMetadata {
-  int32 chunkSize = 1;
-  int32 offset = 2;
-  int64 fileSize = 3;
+message FileData {
+  int32 offset = 1;
+  bytes data = 2;
 }
 
-// Streaming 방식 (청크 단위 업로드)
 message FileUploadChunk {
-  // 첫 청크에 파일, applicationId 이름 포함 (후속 청크는 비워도 됨)
-  string applicationId = 1;
+  int64 applicationId = 1;
   string fileName = 2;
-  bytes chunkData = 3;
-  bool isLastChunk = 4;
+  int32 chunkSize = 3;
+  string uploadedBy = 4;
+  int64 contentLength = 5;
+  FileData fileData = 6;
 }
 
 service FileUploadService {

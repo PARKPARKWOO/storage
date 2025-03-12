@@ -6,9 +6,9 @@ spring:
       enabled: false
   main:
     web-application-type: reactive
-  data:
-    mongodb:
-      uri: mongodb://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@${MONGODB_HOST}:27017/file?authSource=admin
+#  data:
+#    mongodb:
+#      uri: mongodb://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@${MONGODB_HOST}:27017/file?authSource=admin
   profiles:
     active: dev
   r2dbc:
@@ -23,7 +23,13 @@ spring:
     user: ${spring.r2dbc.username}
     password: ${spring.r2dbc.password}
     locations: classpath:db/migration
-
+  cassandra:
+    keyspace-name: storage_keyspace
+    contact-points: ${CASSANDRA_URL}
+    username: ${CASSANDRA_USERNAME}
+    password: ${CASSANDRA_PASSWORD}
+    schema-action: create_if_not_exists
+    local-datacenter: datacenter1
 grpc:
   server:
     port: 9090

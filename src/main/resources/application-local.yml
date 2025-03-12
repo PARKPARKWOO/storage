@@ -9,7 +9,13 @@ spring:
     url: r2dbc:pool:mysql://localhost:3306/storage
     username: root
     password: 1234
-
+  cassandra:
+    contact-points: localhost
+    username: cassandra
+    password: cassandra
+    schema-action: create_if_not_exists
+    port: 9042
+    local-datacenter: datacenter1
 eureka:
   client:
     service-url:
