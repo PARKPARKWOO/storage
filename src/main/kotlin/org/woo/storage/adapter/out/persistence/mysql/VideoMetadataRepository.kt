@@ -5,5 +5,4 @@ import org.woo.storage.domain.metadata.VideoMetadata
 import reactor.core.publisher.Mono
 
 interface VideoMetadataRepository: ReactiveCrudRepository<VideoMetadata, String> {
-    fun findByResourceId(resourceId: String): Mono<VideoMetadata?>
 }

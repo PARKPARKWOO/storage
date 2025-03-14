@@ -3,12 +3,11 @@ package org.woo.storage.application
 import kotlinx.coroutines.reactive.awaitSingle
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.core.io.Resource
-import org.springframework.core.io.buffer.DefaultDataBufferFactory
 import org.springframework.stereotype.Service
 import org.woo.storage.adapter.out.persistence.cassandra.FileChunkRepository
 import org.woo.storage.domain.file.FileChunk
 import org.woo.storage.domain.file.FileChunkKey
-import reactor.core.publisher.Flux
+import java.nio.ByteBuffer
 
 @Service
 class FileDocumentService(
@@ -22,24 +21,14 @@ class FileDocumentService(
     suspend fun findById(id: Long, chunkIndex: Int): Resource {
         val key = FileChunkKey(id, chunkIndex)
         val fileChunk = fileChunkRepository.findById(key).awaitSingle()
-        val resource = ByteArrayResource(fileChunk.data)
-        return resource
+        val bytes = ByteArray(fileChunk.data.remaining())
+        fileChunk.data.get(bytes)
+        return ByteArrayResource(bytes)
     }
 
-    suspend fun storeFile(fileBytes: ByteArray): String {
-        return if (fileBytes.size < FILE_SIZE_THRESHOLD) {
-            storeInDocument(fileBytes)
-        } else {
-//            storeInGridFs(fileBytes)
-            TODO()
-        }
-    }
-
-    private suspend fun storeInDocument(fileBytes: ByteArray): String {
-//        val fileChunk = FileChunk(
-//
-//        )
-        TODO()
-//        return saved.id ?: throw Exception("저장 실패")
+    suspend fun storeFile(fileBytes: ByteBuffer, fileId: Long, chunkIndex: Int) {
+        val id = FileChunkKey(fileId = fileId, chunkIndex = chunkIndex)
+        val fileChunk = FileChunk(data = fileBytes, id = id)
+        fileChunkRepository.save(fileChunk).awaitSingle()
     }
 }

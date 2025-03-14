@@ -11,13 +11,16 @@ import org.woo.storage.domain.metadata.ContentType
 class MetadataFactory(
     private val handlers: List<MetadataHandlerTemplate>,
 ) {
+    // TODO: handler 예외처리
     suspend fun getHandler(fileName: String): MetadataHandlerTemplate {
         val mediaType = extractMediaType(fileName)
         val contentType = extractContentType(mediaType)
-        return handlers.find { }
+        return handlers.find { handler ->
+            handler.isApplicable(contentType)
+        } ?: throw RuntimeException()
     }
 
-    suspend fun createDto(fileName: String, uploadedBy: String, chunkSize: Int, contentLength: Long, fileId: Long): MetadataDto {
+    suspend fun createDto(fileName: String, uploadedBy: String,  chunkSize: Int, contentLength: Long, fileId: Long, applicationId: Long, pageSize: Int): MetadataDto {
         val mediaType = extractMediaType(fileName)
         val contentType = extractContentType(mediaType)
         return when (contentType) {
@@ -27,8 +30,10 @@ class MetadataFactory(
                     chunkSize = chunkSize,
                     contentType = mediaType.toString(),
                     contentLength = contentLength,
-                    fileOriginName = fileName,
+                    fileName = fileName,
                     fileId = fileId,
+                    applicationId = applicationId,
+                    pageSize = pageSize,
                 )
 
             ContentType.VIDEO ->  MetadataDto
@@ -37,8 +42,10 @@ class MetadataFactory(
                     chunkSize = chunkSize,
                     contentType = mediaType.toString(),
                     contentLength = contentLength,
-                    fileOriginName = fileName,
+                    fileName = fileName,
                     fileId = fileId,
+                    applicationId = applicationId,
+                    pageSize = pageSize,
                 )
             ContentType.FILE ->  MetadataDto
                 .toFile(
@@ -46,8 +53,10 @@ class MetadataFactory(
                     chunkSize = chunkSize,
                     contentType = mediaType.toString(),
                     contentLength = contentLength,
-                    fileOriginName = fileName,
+                    fileName = fileName,
                     fileId = fileId,
+                    applicationId = applicationId,
+                    pageSize = pageSize,
                 )
         }
     }

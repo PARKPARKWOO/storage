@@ -1,9 +1,12 @@
 package org.woo.storage.ports.`in`
 
+import java.nio.ByteBuffer
+
 interface UploadUseCase {
-    suspend fun upload(fileData: ByteArray, fileId: Long, chunkIndex: Int)
+    suspend fun file(fileData: ByteBuffer, fileId: Long, chunkIndex: Int)
 
     suspend fun metadata(
-        fineName: String, uploadedBy: String, chunkSize: Int, contentLength: Long, applicationId: Long, fileId: Long
+        fileOriginName: String, uploadedBy: String, chunkSize: Int, contentLength: Long, applicationId: Long, fileId: Long,
+        pageSize: Int,
     )
 }

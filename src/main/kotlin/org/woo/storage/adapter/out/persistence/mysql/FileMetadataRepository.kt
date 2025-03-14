@@ -5,5 +5,4 @@ import org.woo.storage.domain.metadata.FileMetadata
 import reactor.core.publisher.Mono
 
 interface FileMetadataRepository : ReactiveCrudRepository<FileMetadata, String> {
-    fun findByResourceId(resourceId: String): Mono<FileMetadata?>
 }

@@ -8,8 +8,10 @@ data class MetadataDto(
     val contentLength: Long,
     val contentType: String,
     val chunkSize: Int,
+    val applicationId: Long,
     val uploadedAt: LocalDateTime = LocalDateTime.now(),
-    val fileOriginName: String,
+    val fileName: String,
+    val pageSize: Int,
 ) {
     companion object {
         fun toVideo(
@@ -17,16 +19,20 @@ data class MetadataDto(
             contentLength: Long,
             contentType: String,
             chunkSize: Int,
-            fileOriginName: String,
+            fileName: String,
             fileId: Long,
+            applicationId: Long,
+            pageSize: Int,
         ) = MetadataDto(
             uploadedBy = uploadedBy,
             uploadedAt = LocalDateTime.now(),
             chunkSize = chunkSize,
-            fileOriginName = fileOriginName,
+            fileName = fileName,
             contentLength = contentLength,
             contentType = contentType,
             fileId = fileId,
+            applicationId = applicationId,
+            pageSize = pageSize,
         )
 
         fun toImage(
@@ -34,16 +40,20 @@ data class MetadataDto(
             contentLength: Long,
             contentType: String,
             chunkSize: Int,
-            fileOriginName: String,
+            fileName: String,
             fileId: Long,
+            applicationId: Long,
+            pageSize: Int,
         ) = MetadataDto(
             uploadedBy = uploadedBy,
             uploadedAt = LocalDateTime.now(),
             chunkSize = chunkSize,
-            fileOriginName = fileOriginName,
+            fileName = fileName,
             contentLength = contentLength,
             contentType = contentType,
             fileId = fileId,
+            applicationId = applicationId,
+            pageSize = pageSize,
         )
 
         fun toFile(
@@ -51,16 +61,20 @@ data class MetadataDto(
             contentLength: Long,
             contentType: String,
             chunkSize: Int,
-            fileOriginName: String,
+            fileName: String,
             fileId: Long,
+            applicationId: Long,
+            pageSize: Int,
         ) = MetadataDto(
             uploadedBy = uploadedBy,
             uploadedAt = LocalDateTime.now(),
             chunkSize = chunkSize,
-            fileOriginName = fileOriginName,
+            fileName = fileName,
             contentLength = contentLength,
             contentType = contentType,
             fileId = fileId,
+            applicationId = applicationId,
+            pageSize = pageSize,
         )
     }
 }

@@ -1,11 +1,24 @@
 package org.woo.storage.application.handler
 
+import kotlinx.coroutines.reactive.awaitSingle
 import org.springframework.stereotype.Component
+import org.woo.storage.adapter.out.persistence.mysql.FileMetadataRepository
+import org.woo.storage.adapter.out.persistence.mysql.ImageMetadataRepository
+import org.woo.storage.adapter.out.persistence.mysql.MetadataTypeRepository
 import org.woo.storage.application.dto.MetadataDto
+import org.woo.storage.domain.metadata.ContentType
+import org.woo.storage.domain.metadata.FileMetadata
+import org.woo.storage.domain.metadata.ImageMetadata
 
 @Component
-class ImageMetadataHandler: MetadataHandlerTemplate() {
+class ImageMetadataHandler(
+    private val metadataTypeRepository: MetadataTypeRepository,
+    private val imageMetadataRepository: ImageMetadataRepository,
+): MetadataHandlerTemplate(metadataTypeRepository) {
     override suspend fun saveMetadata(dto: MetadataDto) {
-        TODO("Not yet implemented")
+        val imageMetadata = ImageMetadata.from(dto)
+        imageMetadataRepository.save(imageMetadata).awaitSingle()
     }
+
+    override suspend fun isApplicable(contentType: ContentType): Boolean = contentType == ContentType.IMAGE
 }

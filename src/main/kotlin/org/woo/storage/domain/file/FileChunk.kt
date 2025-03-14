@@ -1,15 +1,16 @@
 package org.woo.storage.domain.file
 
-import org.springframework.data.annotation.Id
-import org.springframework.data.cassandra.core.mapping.Column
+import org.springframework.data.cassandra.core.mapping.CassandraType
 import org.springframework.data.cassandra.core.mapping.PrimaryKey
 import org.springframework.data.cassandra.core.mapping.Table
+import java.nio.ByteBuffer
 
 @Table("file_chunks")
 data class FileChunk(
     @PrimaryKey
-    val fileId: FileChunkKey,
-    val data: ByteArray,
+    val id: FileChunkKey,
+    @CassandraType(type = CassandraType.Name.BLOB)
+    val data: ByteBuffer,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -17,15 +18,15 @@ data class FileChunk(
 
         other as FileChunk
 
-        if (fileId != other.fileId) return false
-        if (!data.contentEquals(other.data)) return false
+        if (id != other.id) return false
+        if (data != other.data) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        var result = fileId.hashCode()
-        result = 31 * result + data.contentHashCode()
+        var result = id.hashCode()
+        result = 31 * result + data.hashCode()
         return result
     }
 }

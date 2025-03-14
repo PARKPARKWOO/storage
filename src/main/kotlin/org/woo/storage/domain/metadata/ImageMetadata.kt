@@ -4,6 +4,7 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
 import org.springframework.http.MediaType
+import org.woo.storage.application.dto.MetadataDto
 import java.time.LocalDateTime
 
 @Table("image_metadata")
@@ -25,5 +26,20 @@ class ImageMetadata(
     override val chunkSize: Int,
     @Column("application_id")
     override val applicationId: Long,
+    @Column("page_size")
+    override val pageSize: Int,
 ) : Metadata {
+    companion object {
+        fun from(dto: MetadataDto) = ImageMetadata(
+            fileId = dto.fileId,
+            chunkSize = dto.chunkSize,
+            contentLength = dto.contentLength,
+            contentType = dto.contentType,
+            applicationId = dto.applicationId,
+            uploadedAt = dto.uploadedAt,
+            uploadedBy = dto.uploadedBy,
+            fileName = dto.fileName,
+            pageSize = dto.pageSize,
+        )
+    }
 }

@@ -27,10 +27,11 @@ message FileData {
 message FileUploadChunk {
   int64 applicationId = 1;
   string fileName = 2;
-  int32 chunkSize = 3;
+  int32 pageSize = 3;
   string uploadedBy = 4;
   int64 contentLength = 5;
-  FileData fileData = 6;
+  int32 chunkSize = 6;
+  FileData fileData = 7;
 }
 
 service FileUploadService {

@@ -19,7 +19,7 @@ spring:
     enabled: true
     baseline-on-migrate: true
     baseline-version: 0
-    url: jdbc:mysql://${mysql.host}:3306/auth
+    url: jdbc:mysql://${mysql.host}:3306/storage
     user: ${spring.r2dbc.username}
     password: ${spring.r2dbc.password}
     locations: classpath:db/migration

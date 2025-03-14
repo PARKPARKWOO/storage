@@ -10,5 +10,6 @@ interface Metadata {
     val contentType: String
     val chunkSize: Int
     val uploadedAt: LocalDateTime
+    val pageSize: Int
     val fileName: String
 }
