@@ -43,3 +43,9 @@ create table video_metadata
     application_id bigint,
     page_size int
 );
+
+create table metadata_type
+(
+    file_id bigint primary key,
+    type varchar(100)
+);

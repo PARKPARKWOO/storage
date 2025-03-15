@@ -1,6 +1,8 @@
 package org.woo.storage.domain.metadata
 
 import org.springframework.data.annotation.Id
+import org.springframework.data.annotation.Transient
+import org.springframework.data.domain.Persistable
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
 import org.woo.storage.application.dto.MetadataDto
@@ -27,7 +29,7 @@ class VideoMetadata(
     override val applicationId: Long,
     @Column("page_size")
     override val pageSize: Int,
-): Metadata {
+): Metadata, Persistable<Long> {
     companion object {
         fun from(dto: MetadataDto) = VideoMetadata(
             fileId = dto.fileId,
@@ -40,5 +42,16 @@ class VideoMetadata(
             fileName = dto.fileName,
             pageSize = dto.pageSize,
         )
+    }
+
+    @Transient
+    private var newEntity: Boolean = true
+    override fun getId() = fileId
+
+    @Transient
+    override fun isNew(): Boolean = newEntity
+
+    fun markNotNew() {
+        newEntity = false
     }
 }

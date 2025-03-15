@@ -55,7 +55,7 @@ class UploadController(
 
             // 메타데이터는 한 번만 저장 (첫 청크에서)
             if (metadataSaved.compareAndSet(false, true)) {
-                scope.launch {
+                val metadataJob = scope.launch {
                     uploadUseCase.metadata(
                         fileOriginName = fileName ?: "unknown_file",
                         uploadedBy = request.uploadedBy,
@@ -66,6 +66,7 @@ class UploadController(
                         pageSize = request.pageSize
                     )
                 }
+                jobs.add(metadataJob)
             }
         }
 
