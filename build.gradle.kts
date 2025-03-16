@@ -72,6 +72,11 @@ dependencies {
 
     // tsid
     implementation("io.hypersistence:hypersistence-tsid:2.1.4")
+
+    // for metric
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    runtimeOnly("io.micrometer:micrometer-registry-prometheus")
+    implementation("org.woo:apm:+")
 }
 
 extra["springCloudVersion"] = "2023.0.0"

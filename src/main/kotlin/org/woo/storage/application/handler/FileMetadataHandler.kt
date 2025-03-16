@@ -7,6 +7,7 @@ import org.woo.storage.adapter.out.persistence.mysql.MetadataTypeRepository
 import org.woo.storage.application.dto.MetadataDto
 import org.woo.storage.domain.metadata.ContentType
 import org.woo.storage.domain.metadata.FileMetadata
+import org.woo.storage.domain.metadata.Metadata
 
 @Component
 class FileMetadataHandler(
@@ -19,4 +20,5 @@ class FileMetadataHandler(
     }
 
     override suspend fun isApplicable(contentType: ContentType): Boolean = contentType == ContentType.FILE
+    override suspend fun getMetadata(id: Long): Metadata = fileMetadataRepository.findById(id).awaitSingle()
 }

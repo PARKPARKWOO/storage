@@ -36,7 +36,7 @@ class FileMetadata(
             fileId = dto.fileId,
             chunkSize = dto.chunkSize,
             contentLength = dto.contentLength,
-            contentType = dto.contentType,
+            contentType = dto.mediaType,
             applicationId = dto.applicationId,
             uploadedAt = dto.uploadedAt,
             uploadedBy = dto.uploadedBy,

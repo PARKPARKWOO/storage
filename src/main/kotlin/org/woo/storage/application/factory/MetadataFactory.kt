@@ -20,43 +20,48 @@ class MetadataFactory(
         } ?: throw RuntimeException()
     }
 
+    suspend fun getHandler(contentType: ContentType): MetadataHandlerTemplate =
+        handlers.find { handler -> handler.isApplicable(contentType) } ?: throw RuntimeException()
+
     suspend fun createDto(fileName: String, uploadedBy: String,  chunkSize: Int, contentLength: Long, fileId: Long, applicationId: Long, pageSize: Int): MetadataDto {
         val mediaType = extractMediaType(fileName)
-        val contentType = extractContentType(mediaType)
-        return when (contentType) {
+        return when (val contentType = extractContentType(mediaType)) {
             ContentType.IMAGE -> MetadataDto
                 .toImage(
                     uploadedBy = uploadedBy,
                     chunkSize = chunkSize,
-                    contentType = mediaType.toString(),
+                    contentType = contentType.name,
                     contentLength = contentLength,
                     fileName = fileName,
                     fileId = fileId,
                     applicationId = applicationId,
                     pageSize = pageSize,
+                    mediaType = mediaType.toString()
                 )
 
             ContentType.VIDEO ->  MetadataDto
                 .toVideo(
                     uploadedBy = uploadedBy,
                     chunkSize = chunkSize,
-                    contentType = mediaType.toString(),
+                    contentType = contentType.name,
                     contentLength = contentLength,
                     fileName = fileName,
                     fileId = fileId,
                     applicationId = applicationId,
                     pageSize = pageSize,
+                    mediaType = mediaType.toString(),
                 )
             ContentType.FILE ->  MetadataDto
                 .toFile(
                     uploadedBy = uploadedBy,
                     chunkSize = chunkSize,
-                    contentType = mediaType.toString(),
+                    contentType = contentType.name,
                     contentLength = contentLength,
                     fileName = fileName,
                     fileId = fileId,
                     applicationId = applicationId,
                     pageSize = pageSize,
+                    mediaType = mediaType.toString(),
                 )
         }
     }

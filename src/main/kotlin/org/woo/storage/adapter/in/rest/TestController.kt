@@ -27,9 +27,9 @@ class TestController(
     private val retrieveFacade: RetrieveFacade,
     private val uploadFacade: UploadUseCase,
 ) {
-    @GetMapping("/{path}")
-    suspend fun download(@PathVariable("path") path: String): ResponseEntity<Resource> {
-        val result: Pair<Resource, Metadata> = retrieveFacade.retrieveResource(path)
+    @GetMapping("/{id}")
+    suspend fun download(@PathVariable("id") id: Long): ResponseEntity<Resource> {
+        val result: Pair<Resource, Metadata> = retrieveFacade.retrieveResource(id)
         return ResponseEntity.ok()
             .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"${result.second.fileName}\"")
             .contentType(MediaType.parseMediaType(result.second.contentType))

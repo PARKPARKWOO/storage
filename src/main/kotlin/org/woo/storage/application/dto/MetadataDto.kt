@@ -7,6 +7,7 @@ data class MetadataDto(
     val uploadedBy: String,
     val contentLength: Long,
     val contentType: String,
+    val mediaType: String,
     val chunkSize: Int,
     val applicationId: Long,
     val uploadedAt: LocalDateTime = LocalDateTime.now(),
@@ -23,6 +24,7 @@ data class MetadataDto(
             fileId: Long,
             applicationId: Long,
             pageSize: Int,
+            mediaType: String,
         ) = MetadataDto(
             uploadedBy = uploadedBy,
             uploadedAt = LocalDateTime.now(),
@@ -33,6 +35,7 @@ data class MetadataDto(
             fileId = fileId,
             applicationId = applicationId,
             pageSize = pageSize,
+            mediaType = mediaType,
         )
 
         fun toImage(
@@ -44,6 +47,7 @@ data class MetadataDto(
             fileId: Long,
             applicationId: Long,
             pageSize: Int,
+            mediaType: String,
         ) = MetadataDto(
             uploadedBy = uploadedBy,
             uploadedAt = LocalDateTime.now(),
@@ -54,6 +58,7 @@ data class MetadataDto(
             fileId = fileId,
             applicationId = applicationId,
             pageSize = pageSize,
+            mediaType = mediaType,
         )
 
         fun toFile(
@@ -65,6 +70,7 @@ data class MetadataDto(
             fileId: Long,
             applicationId: Long,
             pageSize: Int,
+            mediaType: String,
         ) = MetadataDto(
             uploadedBy = uploadedBy,
             uploadedAt = LocalDateTime.now(),
@@ -75,6 +81,7 @@ data class MetadataDto(
             fileId = fileId,
             applicationId = applicationId,
             pageSize = pageSize,
+            mediaType = mediaType,
         )
     }
 }

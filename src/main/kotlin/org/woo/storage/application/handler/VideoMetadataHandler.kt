@@ -6,6 +6,7 @@ import org.woo.storage.adapter.out.persistence.mysql.MetadataTypeRepository
 import org.woo.storage.adapter.out.persistence.mysql.VideoMetadataRepository
 import org.woo.storage.application.dto.MetadataDto
 import org.woo.storage.domain.metadata.ContentType
+import org.woo.storage.domain.metadata.Metadata
 import org.woo.storage.domain.metadata.VideoMetadata
 
 @Component
@@ -20,4 +21,6 @@ class VideoMetadataHandler(
     }
 
     override suspend fun isApplicable(contentType: ContentType): Boolean = contentType == ContentType.VIDEO
+
+    override suspend fun getMetadata(id: Long): Metadata = videoMetadataRepository.findById(id).awaitSingle()
 }

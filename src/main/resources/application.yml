@@ -45,5 +45,15 @@ eureka:
   instance:
     prefer-ip-address: false
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+
+# custom
 mysql:
   host: ${RDBMS_URL}
+
+pyroscope:
+  address: ${PYROSCOPE_SERVER_ADDRESS}
