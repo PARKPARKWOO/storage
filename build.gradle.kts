@@ -77,6 +77,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     runtimeOnly("io.micrometer:micrometer-registry-prometheus")
     implementation("org.woo:apm:+")
+
+    // log-loki
+    implementation("com.github.loki4j:loki-logback-appender:1.5.1")
 }
 
 extra["springCloudVersion"] = "2023.0.0"

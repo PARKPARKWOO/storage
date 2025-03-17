@@ -1,4 +1,4 @@
-FROM openjdk:17-oracle
+FROM openjdk:21-jdk
 
 # Pyroscope Application Name and Server Address
 ARG PYROSCOPE_APPLICATION_NAME
