@@ -62,7 +62,7 @@ dependencies {
     }
     implementation("io.grpc:grpc-kotlin-stub:1.4.1")
     implementation("com.google.protobuf:protobuf-java:$protobufVersion")
-
+    implementation("io.grpc:grpc-protobuf:$grpcVersion")
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
 
     // my utils

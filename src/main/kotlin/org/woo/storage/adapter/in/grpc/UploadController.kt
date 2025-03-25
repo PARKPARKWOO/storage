@@ -30,7 +30,7 @@ class UploadController(
     val scope = CoroutineScope(dispatcher)
 
     override fun uploadFileStream(requests: Flow<FileUploadChunk>): Flow<FileUploadResponse> = flow {
-        var fileName: String? = null
+        var fileName: String?
         val fileId = TSID.fast().toLong()
         val metadataSaved = AtomicBoolean(false)
         val job = Job()
