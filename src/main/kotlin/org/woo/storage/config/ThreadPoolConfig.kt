@@ -10,6 +10,7 @@ class ThreadPoolConfig {
     @Bean("grpcThreadPool")
     fun grpcThreadPool(): Executor {
         val executor = ThreadPoolTaskExecutor()
+        executor.poolSize
         return executor
     }
 }

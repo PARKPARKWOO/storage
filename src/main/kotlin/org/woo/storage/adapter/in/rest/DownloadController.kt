@@ -4,6 +4,7 @@ import io.hypersistence.tsid.TSID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.springframework.core.io.Resource
+import org.springframework.core.io.buffer.DataBuffer
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -12,24 +13,24 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
 import org.woo.storage.application.facade.RetrieveFacade
 import org.woo.storage.domain.metadata.Metadata
 import org.woo.storage.ports.`in`.UploadUseCase
+import reactor.core.publisher.Flux
 import java.nio.ByteBuffer
 
 @RestController
-@RequestMapping("/api/v1/image")
-class TestController(
+@RequestMapping("/api/v1/download")
+class DownloadController(
     private val retrieveFacade: RetrieveFacade,
     private val uploadFacade: UploadUseCase,
 ) {
     @GetMapping("/{id}")
-    suspend fun download(@PathVariable("id") id: Long): ResponseEntity<Resource> {
-        val result: Pair<Resource, Metadata> = retrieveFacade.retrieveResource(id)
+    suspend fun download(@PathVariable("id") id: Long): ResponseEntity<Flux<DataBuffer>> {
+        val result: Pair<Flux<DataBuffer>, Metadata> = retrieveFacade.retrieveResource(id)
         return ResponseEntity.ok()
             .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"${result.second.fileName}\"")
             .contentType(MediaType.parseMediaType(result.second.contentType))

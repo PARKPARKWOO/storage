@@ -1,5 +1,6 @@
 package org.woo.storage.application
 
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.reactive.awaitSingle
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.core.io.Resource
@@ -18,12 +19,12 @@ class FileDocumentService(
     }
 
 
-    suspend fun findById(id: Long, chunkIndex: Int): Resource {
+    suspend fun findById(id: Long, chunkIndex: Int): Resource = coroutineScope{
         val key = FileChunkKey(id, chunkIndex)
         val fileChunk = fileChunkRepository.findById(key).awaitSingle()
         val bytes = ByteArray(fileChunk.data.remaining())
         fileChunk.data.get(bytes)
-        return ByteArrayResource(bytes)
+        ByteArrayResource(bytes)
     }
 
     suspend fun storeFile(fileBytes: ByteBuffer, fileId: Long, chunkIndex: Int) {

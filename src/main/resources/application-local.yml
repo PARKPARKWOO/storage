@@ -16,6 +16,8 @@ spring:
     schema-action: create_if_not_exists
     port: 9042
     local-datacenter: datacenter1
+    request:
+      timeout: 10s
 eureka:
   client:
     service-url:
