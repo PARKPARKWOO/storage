@@ -9,7 +9,7 @@ data class MetadataDto(
     val contentType: String,
     val mediaType: String,
     val chunkSize: Int,
-    val applicationId: Long,
+    val applicationId: String,
     val uploadedAt: LocalDateTime = LocalDateTime.now(),
     val fileName: String,
     val pageSize: Int,
@@ -22,7 +22,7 @@ data class MetadataDto(
             chunkSize: Int,
             fileName: String,
             fileId: Long,
-            applicationId: Long,
+            applicationId: String,
             pageSize: Int,
             mediaType: String,
         ) = MetadataDto(
@@ -45,7 +45,7 @@ data class MetadataDto(
             chunkSize: Int,
             fileName: String,
             fileId: Long,
-            applicationId: Long,
+            applicationId: String,
             pageSize: Int,
             mediaType: String,
         ) = MetadataDto(
@@ -68,7 +68,7 @@ data class MetadataDto(
             chunkSize: Int,
             fileName: String,
             fileId: Long,
-            applicationId: Long,
+            applicationId: String,
             pageSize: Int,
             mediaType: String,
         ) = MetadataDto(

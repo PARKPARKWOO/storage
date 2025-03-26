@@ -21,7 +21,7 @@ class UploadFacade(
         uploadedBy: String,
         chunkSize: Int,
         contentLength: Long,
-        applicationId: Long,
+        applicationId: String,
         fileId: Long,
         pageSize: Int,
     ) {

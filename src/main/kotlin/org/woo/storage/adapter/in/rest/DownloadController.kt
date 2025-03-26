@@ -47,7 +47,7 @@ class DownloadController(
                 val contentLength = file.size
                 val chunkSize = 1024 * 1024  // 1MB
                 val id = TSID.fast().toLong()
-                uploadFacade.metadata(fileOriginName, "user1", chunkSize, contentLength, 1L, id, 0)
+                uploadFacade.metadata(fileOriginName, "user1", chunkSize, contentLength, "123", id, 0)
 
                 // 파일을 청크 단위로 읽어서 Cassandra에 저장
                 file.inputStream.use { inputStream ->

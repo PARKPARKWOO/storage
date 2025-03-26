@@ -23,7 +23,7 @@ class MetadataFactory(
     suspend fun getHandler(contentType: ContentType): MetadataHandlerTemplate =
         handlers.find { handler -> handler.isApplicable(contentType) } ?: throw RuntimeException()
 
-    suspend fun createDto(fileName: String, uploadedBy: String,  chunkSize: Int, contentLength: Long, fileId: Long, applicationId: Long, pageSize: Int): MetadataDto {
+    suspend fun createDto(fileName: String, uploadedBy: String,  chunkSize: Int, contentLength: Long, fileId: Long, applicationId: String, pageSize: Int): MetadataDto {
         val mediaType = extractMediaType(fileName)
         return when (val contentType = extractContentType(mediaType)) {
             ContentType.IMAGE -> MetadataDto

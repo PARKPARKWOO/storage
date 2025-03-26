@@ -5,7 +5,7 @@ import java.time.LocalDateTime
 interface Metadata {
     val fileId: Long
     val uploadedBy: String
-    val applicationId: Long
+    val applicationId: String
     val contentLength: Long
     val contentType: String
     val chunkSize: Int

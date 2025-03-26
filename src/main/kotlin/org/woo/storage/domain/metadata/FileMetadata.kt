@@ -27,7 +27,7 @@ class FileMetadata(
     @Column("chunk_size")
     override val chunkSize: Int,
     @Column("application_id")
-    override val applicationId: Long,
+    override val applicationId: String,
     @Column("page_size")
     override val pageSize: Int,
 ) : Metadata, Persistable<Long> {
