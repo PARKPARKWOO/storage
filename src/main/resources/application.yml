@@ -12,7 +12,7 @@ spring:
   profiles:
     active: dev
   r2dbc:
-    url: r2dbc:mysql://${mysql.host}:3306/storage
+    url: r2dbc:mysql://${mysql.host}:3306/storage?useUnicode=yes&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
     username: ${RDBMS_USERNAME}
     password: ${RDBMS_PASSWORD}
   flyway:

@@ -16,7 +16,9 @@ import kotlinx.coroutines.launch
 import net.devh.boot.grpc.server.service.GrpcService
 import org.springframework.beans.factory.annotation.Qualifier
 import org.woo.storage.ports.`in`.UploadUseCase
+import java.net.URLEncoder
 import java.nio.ByteBuffer
+import java.nio.charset.StandardCharsets
 import java.util.concurrent.Executor
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -35,7 +37,7 @@ class UploadController(
         val metadataSaved = AtomicBoolean(false)
         val job = Job()
         requests.collect { request ->
-            fileName = request.fileName
+            fileName = encodeFilename(request.fileName)
             // 청크 저장 작업: ByteBuffer로 변환 후 저장
             scope.launch(job) {
                 val byteBuffer = ByteBuffer.wrap(request.fileData.data.toByteArray())
@@ -75,8 +77,9 @@ class UploadController(
     override suspend fun uploadFile(request: FileUploadRequest): FileUploadResponse {
         val fileId = TSID.fast().toLong()
         val metadataJob = scope.async {
+            val fileName = encodeFilename(request.fileName)
             uploadUseCase.metadata(
-                fileOriginName = request.fileName,
+                fileOriginName = fileName,
                 uploadedBy = request.uploadedBy,
                 contentLength = request.contentLength,
                 chunkSize = request.contentLength.toInt(),
@@ -97,5 +100,9 @@ class UploadController(
         return FileUploadResponse.newBuilder()
             .setMessage(fileId)
             .build()
+    }
+
+    fun encodeFilename(filename: String): String {
+        return URLEncoder.encode(filename, StandardCharsets.UTF_8.toString())
     }
 }
