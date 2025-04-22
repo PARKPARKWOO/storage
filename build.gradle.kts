@@ -6,6 +6,7 @@ plugins {
     id("org.springframework.boot") version "3.4.2"
     id("io.spring.dependency-management") version "1.1.7"
     id("com.google.protobuf") version "0.9.4"
+    id("org.woo.plugin.version-check") version "0.0.8"
 }
 
 group = "org.woo"
@@ -51,7 +52,7 @@ dependencies {
     implementation("org.flywaydb:flyway-core:10.19.0")
     implementation("org.flywaydb:flyway-mysql:10.19.0")
 
-    implementation("org.woo:grpc:0.2.4")
+    implementation("org.woo:grpc:0.2.9")
     implementation("io.grpc:grpc-netty-shaded:$grpcVersion")
     // https://mvnrepository.com/artifact/net.devh/grpc-spring-boot-starter
 //    implementation("net.devh:grpc-spring-boot-starter:3.1.0.RELEASE")
