@@ -78,7 +78,7 @@ dependencies {
     // for metric
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     runtimeOnly("io.micrometer:micrometer-registry-prometheus")
-    implementation("org.woo:apm:+")
+    implementation("org.woo:apm:0.2.3")
 
     // log-loki
     implementation("com.github.loki4j:loki-logback-appender:1.5.1")
