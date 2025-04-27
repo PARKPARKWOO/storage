@@ -52,20 +52,7 @@ class RetrieveFacade(
             }
         }.flowOn(Dispatchers.IO)
 
-        // 필요시 Flow를 Flux로 변환
         val dataBufferFlux = dataBufferFlow.asFlux()
-
-
-//        val chunkResources: List<Resource> = (0 until metadata.pageSize).map { index ->
-//            async { fileDocumentService.findById(id, index) }
-//        }.awaitAll()
-//
-//        val combinedBytes = chunkResources
-//            .map { it.inputStream.readBytes() }
-//            .reduce { acc, bytes -> acc + bytes }
-//
-//        val finalResource: Resource = ByteArrayResource(combinedBytes)
-
         Pair(dataBufferFlux, metadata)
     }
 }

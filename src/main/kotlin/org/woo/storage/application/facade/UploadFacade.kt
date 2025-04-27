@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service
 import org.woo.storage.application.FileDocumentService
 import org.woo.storage.application.factory.MetadataFactory
 import org.woo.storage.ports.`in`.UploadUseCase
+import java.io.InputStream
 import java.nio.ByteBuffer
 
 @Service

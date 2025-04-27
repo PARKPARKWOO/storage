@@ -1,5 +1,6 @@
 package org.woo.storage.ports.`in`
 
+import java.io.InputStream
 import java.nio.ByteBuffer
 
 interface UploadUseCase {

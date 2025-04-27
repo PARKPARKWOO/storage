@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service
 import org.woo.storage.adapter.out.persistence.cassandra.FileChunkRepository
 import org.woo.storage.domain.file.FileChunk
 import org.woo.storage.domain.file.FileChunkKey
+import java.io.InputStream
 import java.nio.ByteBuffer
 
 @Service

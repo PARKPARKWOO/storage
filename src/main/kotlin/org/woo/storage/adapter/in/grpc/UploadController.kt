@@ -4,7 +4,9 @@ import com.example.grpc.fileupload.FileUploadChunk
 import com.example.grpc.fileupload.FileUploadRequest
 import com.example.grpc.fileupload.FileUploadResponse
 import com.example.grpc.fileupload.FileUploadServiceGrpcKt
+import com.fasterxml.jackson.databind.util.ArrayBuilders.ByteBuilder
 import io.hypersistence.tsid.TSID
+import jdk.internal.misc.VM
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.asCoroutineDispatcher
@@ -38,9 +40,8 @@ class UploadController(
         val job = Job()
         requests.collect { request ->
             fileName = encodeFilename(request.fileName)
-            // 청크 저장 작업: ByteBuffer로 변환 후 저장
             scope.launch(job) {
-                val byteBuffer = ByteBuffer.wrap(request.fileData.data.toByteArray())
+                val byteBuffer = request.fileData.data.asReadOnlyByteBuffer()
                 uploadUseCase.file(
                     fileData = byteBuffer,
                     fileId = fileId,
