@@ -14,6 +14,7 @@ class MetadataFactory(
     companion object {
         const val DEFAULT_ACCESS_LEVEL = 0
     }
+
     // TODO: handler 예외처리
     suspend fun getHandler(fileName: String): MetadataHandlerTemplate {
         val mediaType = extractMediaType(fileName)
@@ -26,7 +27,16 @@ class MetadataFactory(
     suspend fun getHandler(contentType: ContentType): MetadataHandlerTemplate =
         handlers.find { handler -> handler.isApplicable(contentType) } ?: throw RuntimeException()
 
-    suspend fun createDto(fileName: String, uploadedBy: String,  chunkSize: Int, contentLength: Long, fileId: Long, applicationId: String, pageSize: Int): MetadataDto {
+    suspend fun createDto(
+        fileName: String,
+        uploadedBy: String,
+        chunkSize: Int,
+        contentLength: Long,
+        fileId: Long,
+        applicationId: String,
+        pageSize: Int,
+        accessLevel: Int,
+    ): MetadataDto {
         val mediaType = extractMediaType(fileName)
         return when (val contentType = extractContentType(mediaType)) {
             ContentType.IMAGE -> MetadataDto
@@ -40,10 +50,10 @@ class MetadataFactory(
                     applicationId = applicationId,
                     pageSize = pageSize,
                     mediaType = mediaType.toString(),
-                    accessLevel = DEFAULT_ACCESS_LEVEL,
+                    accessLevel = accessLevel,
                 )
 
-            ContentType.VIDEO ->  MetadataDto
+            ContentType.VIDEO -> MetadataDto
                 .toVideo(
                     uploadedBy = uploadedBy,
                     chunkSize = chunkSize,
@@ -54,9 +64,10 @@ class MetadataFactory(
                     applicationId = applicationId,
                     pageSize = pageSize,
                     mediaType = mediaType.toString(),
-                    accessLevel = DEFAULT_ACCESS_LEVEL,
+                    accessLevel = accessLevel,
                 )
-            ContentType.FILE ->  MetadataDto
+
+            ContentType.FILE -> MetadataDto
                 .toFile(
                     uploadedBy = uploadedBy,
                     chunkSize = chunkSize,
@@ -67,7 +78,7 @@ class MetadataFactory(
                     applicationId = applicationId,
                     pageSize = pageSize,
                     mediaType = mediaType.toString(),
-                    accessLevel = DEFAULT_ACCESS_LEVEL,
+                    accessLevel = accessLevel,
                 )
         }
     }

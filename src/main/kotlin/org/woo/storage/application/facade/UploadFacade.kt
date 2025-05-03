@@ -25,9 +25,10 @@ class UploadFacade(
         applicationId: String,
         fileId: Long,
         pageSize: Int,
+        accessLevel: Int,
     ) {
         val handler = metadataFactory.getHandler(fileOriginName)
-        val dto = metadataFactory.createDto(fileOriginName, uploadedBy, chunkSize, contentLength, fileId, applicationId, pageSize)
+        val dto = metadataFactory.createDto(fileOriginName, uploadedBy, chunkSize, contentLength, fileId, applicationId, pageSize, accessLevel)
         handler.save(dto)
     }
 }
