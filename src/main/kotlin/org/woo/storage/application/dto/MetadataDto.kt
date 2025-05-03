@@ -13,6 +13,7 @@ data class MetadataDto(
     val uploadedAt: LocalDateTime = LocalDateTime.now(),
     val fileName: String,
     val pageSize: Int,
+    val accessLevel: Int,
 ) {
     companion object {
         fun toVideo(
@@ -25,6 +26,7 @@ data class MetadataDto(
             applicationId: String,
             pageSize: Int,
             mediaType: String,
+            accessLevel: Int,
         ) = MetadataDto(
             uploadedBy = uploadedBy,
             uploadedAt = LocalDateTime.now(),
@@ -36,6 +38,7 @@ data class MetadataDto(
             applicationId = applicationId,
             pageSize = pageSize,
             mediaType = mediaType,
+            accessLevel = accessLevel,
         )
 
         fun toImage(
@@ -48,6 +51,7 @@ data class MetadataDto(
             applicationId: String,
             pageSize: Int,
             mediaType: String,
+            accessLevel: Int
         ) = MetadataDto(
             uploadedBy = uploadedBy,
             uploadedAt = LocalDateTime.now(),
@@ -59,6 +63,7 @@ data class MetadataDto(
             applicationId = applicationId,
             pageSize = pageSize,
             mediaType = mediaType,
+            accessLevel = accessLevel,
         )
 
         fun toFile(
@@ -71,6 +76,7 @@ data class MetadataDto(
             applicationId: String,
             pageSize: Int,
             mediaType: String,
+            accessLevel: Int
         ) = MetadataDto(
             uploadedBy = uploadedBy,
             uploadedAt = LocalDateTime.now(),
@@ -82,6 +88,7 @@ data class MetadataDto(
             applicationId = applicationId,
             pageSize = pageSize,
             mediaType = mediaType,
+            accessLevel = accessLevel,
         )
     }
 }

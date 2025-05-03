@@ -11,6 +11,9 @@ import org.woo.storage.domain.metadata.ContentType
 class MetadataFactory(
     private val handlers: List<MetadataHandlerTemplate>,
 ) {
+    companion object {
+        const val DEFAULT_ACCESS_LEVEL = 0
+    }
     // TODO: handler 예외처리
     suspend fun getHandler(fileName: String): MetadataHandlerTemplate {
         val mediaType = extractMediaType(fileName)
@@ -36,7 +39,8 @@ class MetadataFactory(
                     fileId = fileId,
                     applicationId = applicationId,
                     pageSize = pageSize,
-                    mediaType = mediaType.toString()
+                    mediaType = mediaType.toString(),
+                    accessLevel = DEFAULT_ACCESS_LEVEL,
                 )
 
             ContentType.VIDEO ->  MetadataDto
@@ -50,6 +54,7 @@ class MetadataFactory(
                     applicationId = applicationId,
                     pageSize = pageSize,
                     mediaType = mediaType.toString(),
+                    accessLevel = DEFAULT_ACCESS_LEVEL,
                 )
             ContentType.FILE ->  MetadataDto
                 .toFile(
@@ -62,6 +67,7 @@ class MetadataFactory(
                     applicationId = applicationId,
                     pageSize = pageSize,
                     mediaType = mediaType.toString(),
+                    accessLevel = DEFAULT_ACCESS_LEVEL,
                 )
         }
     }

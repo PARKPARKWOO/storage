@@ -57,7 +57,8 @@ class UploadController(
                         chunkSize = request.chunkSize,
                         applicationId = request.applicationId,
                         fileId = fileId,
-                        pageSize = request.pageSize
+                        pageSize = request.pageSize,
+                        accessLevel = request.accessLevel,
                     )
                 }
             }
@@ -84,7 +85,8 @@ class UploadController(
                 chunkSize = request.contentLength.toInt(),
                 applicationId = request.applicationId,
                 fileId = fileId,
-                pageSize = 1
+                pageSize = 1,
+                accessLevel = 0,
             )
         }
         val fileJob = scope.async {

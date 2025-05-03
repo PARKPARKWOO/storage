@@ -8,6 +8,6 @@ interface UploadUseCase {
 
     suspend fun metadata(
         fileOriginName: String, uploadedBy: String, chunkSize: Int, contentLength: Long, applicationId: String, fileId: Long,
-        pageSize: Int,
+        pageSize: Int, accessLevel: Int,
     )
 }

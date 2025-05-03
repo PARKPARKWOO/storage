@@ -29,6 +29,8 @@ class VideoMetadata(
     override val applicationId: String,
     @Column("page_size")
     override val pageSize: Int,
+    @Column("access_level")
+    override val accessLevel: Int
 ): Metadata, Persistable<Long> {
     companion object {
         fun from(dto: MetadataDto) = VideoMetadata(
@@ -41,6 +43,7 @@ class VideoMetadata(
             uploadedBy = dto.uploadedBy,
             fileName = dto.fileName,
             pageSize = dto.pageSize,
+            accessLevel = dto.accessLevel,
         )
     }
 

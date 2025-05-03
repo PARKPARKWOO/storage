@@ -1,5 +1,7 @@
 package org.woo.storage.adapter.`in`.rest
 
+import annotation.AuthenticationUser
+import dto.UserContext
 import io.hypersistence.tsid.TSID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -30,8 +32,12 @@ class DownloadController(
     private val uploadFacade: UploadUseCase,
 ) {
     @GetMapping("/{id}")
-    suspend fun download(@PathVariable("id") id: Long): ResponseEntity<Flux<DataBuffer>> {
-        val result: Pair<Flux<DataBuffer>, Metadata> = retrieveFacade.retrieveResource(id)
+    suspend fun download(
+        @PathVariable("id") id: Long,
+        @AuthenticationUser(isRequired = false)
+        user: UserContext?,
+    ): ResponseEntity<Flux<DataBuffer>> {
+        val result: Pair<Flux<DataBuffer>, Metadata> = retrieveFacade.retrieveResource(id, user)
         return ResponseEntity.ok()
             .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"${result.second.fileName}\"")
             .contentType(MediaType.parseMediaType(result.second.contentType))
@@ -48,7 +54,7 @@ class DownloadController(
                 val contentLength = file.size
                 val chunkSize = 1024 * 1024  // 1MB
                 val id = TSID.fast().toLong()
-                uploadFacade.metadata(fileOriginName, "user1", chunkSize, contentLength, "123", id, 0)
+                uploadFacade.metadata(fileOriginName, "user1", chunkSize, contentLength, "123", id, 0, 0)
 
                 // 파일을 청크 단위로 읽어서 Cassandra에 저장
                 file.inputStream.use { inputStream ->

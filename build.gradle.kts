@@ -52,7 +52,7 @@ dependencies {
     implementation("org.flywaydb:flyway-core:10.19.0")
     implementation("org.flywaydb:flyway-mysql:10.19.0")
 
-    implementation("org.woo:grpc:0.2.9")
+    implementation("org.woo:grpc:0.2.11")
     implementation("io.grpc:grpc-netty-shaded:$grpcVersion")
     // https://mvnrepository.com/artifact/net.devh/grpc-spring-boot-starter
 //    implementation("net.devh:grpc-spring-boot-starter:3.1.0.RELEASE")
@@ -82,6 +82,9 @@ dependencies {
 
     // log-loki
     implementation("com.github.loki4j:loki-logback-appender:1.5.1")
+
+    // auth
+    implementation("org.woo:domain-auth:0.1.9")
 }
 
 extra["springCloudVersion"] = "2023.0.0"

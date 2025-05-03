@@ -12,4 +12,5 @@ interface Metadata {
     val uploadedAt: LocalDateTime
     val pageSize: Int
     val fileName: String
+    val accessLevel: Int
 }

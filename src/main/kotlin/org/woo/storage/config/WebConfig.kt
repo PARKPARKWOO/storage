@@ -6,9 +6,14 @@ import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.reactive.CorsConfigurationSource
 import org.springframework.web.cors.reactive.CorsWebFilter
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource
+import org.springframework.web.reactive.config.WebFluxConfigurer
+import org.springframework.web.reactive.result.method.annotation.ArgumentResolverConfigurer
+import org.woo.storage.adapter.`in`.rest.AuthenticationUserArgumentResolver
 
 @Configuration
-class WebConfig {
+class WebConfig(
+    private val authenticationUserArgumentResolver: AuthenticationUserArgumentResolver
+): WebFluxConfigurer {
     @Bean
     fun corsWebFilter(): CorsWebFilter {
         val config = CorsConfiguration().apply {
@@ -28,5 +33,9 @@ class WebConfig {
             registerCorsConfiguration("/**", config)
         }
         return CorsWebFilter(source)
+    }
+
+    override fun configureArgumentResolvers(configurer: ArgumentResolverConfigurer) {
+        configurer.addCustomResolver(authenticationUserArgumentResolver)
     }
 }
