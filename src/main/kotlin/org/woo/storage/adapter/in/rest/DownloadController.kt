@@ -1,6 +1,7 @@
 package org.woo.storage.adapter.`in`.rest
 
 import annotation.AuthenticationUser
+import dto.Passport
 import dto.UserContext
 import io.hypersistence.tsid.TSID
 import kotlinx.coroutines.Dispatchers
@@ -35,9 +36,9 @@ class DownloadController(
     suspend fun download(
         @PathVariable("id") id: Long,
         @AuthenticationUser(isRequired = false)
-        user: UserContext?,
+        passport: Passport?,
     ): ResponseEntity<Flux<DataBuffer>> {
-        val result: Pair<Flux<DataBuffer>, Metadata> = retrieveFacade.retrieveResource(id, user)
+        val result: Pair<Flux<DataBuffer>, Metadata> = retrieveFacade.retrieveResource(id, passport)
         return ResponseEntity.ok()
             .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"${result.second.fileName}\"")
             .contentType(MediaType.parseMediaType(result.second.contentType))

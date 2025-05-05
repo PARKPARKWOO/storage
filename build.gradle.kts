@@ -52,7 +52,7 @@ dependencies {
     implementation("org.flywaydb:flyway-core:10.19.0")
     implementation("org.flywaydb:flyway-mysql:10.19.0")
 
-    implementation("org.woo:grpc:0.2.11")
+    implementation("org.woo:grpc:0.3.0")
     implementation("io.grpc:grpc-netty-shaded:$grpcVersion")
     // https://mvnrepository.com/artifact/net.devh/grpc-spring-boot-starter
 //    implementation("net.devh:grpc-spring-boot-starter:3.1.0.RELEASE")
@@ -60,6 +60,11 @@ dependencies {
         exclude(group = "io.grpc", module = "grpc-netty-shaded")
         exclude(group = "io.grpc", module = "grpc-protobuf")
 //        exclude(group = "io.grpc", module = "grpc-")
+    }
+
+    implementation("net.devh:grpc-client-spring-boot-starter:3.1.0.RELEASE") {
+        exclude(group = "io.grpc", module = "grpc-netty-shaded")
+        exclude(group = "io.grpc", module = "grpc-protobuf")
     }
     implementation("io.grpc:grpc-kotlin-stub:1.4.1")
     implementation("com.google.protobuf:protobuf-java:$protobufVersion")
@@ -84,7 +89,7 @@ dependencies {
     implementation("com.github.loki4j:loki-logback-appender:1.5.1")
 
     // auth
-    implementation("org.woo:domain-auth:0.1.9")
+    implementation("org.woo:domain-auth:0.2.2")
 }
 
 extra["springCloudVersion"] = "2023.0.0"

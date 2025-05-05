@@ -30,3 +30,6 @@ server:
 grpc:
   server:
     port: 9091
+
+discovery-host:
+  auth: 'discovery:///local-auth'

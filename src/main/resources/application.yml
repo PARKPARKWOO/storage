@@ -30,9 +30,20 @@ spring:
     password: ${CASSANDRA_PASSWORD}
     schema-action: create_if_not_exists
     local-datacenter: datacenter1
+
+discovery-host:
+  auth: 'discovery:///${spring.profiles.active}-${AUTH_NAME}'
+
 grpc:
   server:
     port: 9090
+  client:
+    auth:
+      address: ${discovery-host.auth}
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiationType: plaintext
+
 
 server:
   http2:

@@ -1,5 +1,6 @@
 package org.woo.storage.application.facade
 
+import dto.Passport
 import dto.UserContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -37,7 +38,7 @@ class RetrieveFacade(
     private val metadataTypeRepository: MetadataTypeRepository,
     private val accessControlService: AccessControlService,
 ) {
-    suspend fun retrieveResource(id: Long, userContext: UserContext?): Pair<Flux<DataBuffer>, Metadata> = coroutineScope {
+    suspend fun retrieveResource(id: Long, passport: Passport?): Pair<Flux<DataBuffer>, Metadata> = coroutineScope {
 //        val resourceId = shortUrlService.getResourceId(path)
         val metadataType = metadataTypeRepository.findById(id).awaitSingle()
         val contentType = ContentType.valueOf(metadataType.type)
@@ -45,7 +46,8 @@ class RetrieveFacade(
         val handler = metadataFactory.getHandler(contentType)
 
         val metadata = handler.get(id)
-        accessControlService.verifyAccess(userContext, metadata)
+
+        accessControlService.verifyAccess(passport, metadata)
         val dataBufferFlow = flow {
             for (chunkIndex in 0 until metadata.pageSize) {
                 val resource = fileDocumentService.findById(id, chunkIndex)

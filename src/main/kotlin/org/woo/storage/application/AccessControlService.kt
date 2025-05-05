@@ -1,5 +1,6 @@
 package org.woo.storage.application
 
+import dto.Passport
 import dto.UserContext
 import model.Role
 import org.springframework.stereotype.Service
@@ -12,19 +13,19 @@ class AccessControlService {
         const val PUBLIC_ACCESS = 0
     }
 
-    suspend fun verifyAccess(userContext: UserContext?, metadata: Metadata) {
+    suspend fun verifyAccess(passport: Passport?, metadata: Metadata) {
         val accessLevel = metadata.accessLevel
         if (accessLevel == PUBLIC_ACCESS) return
-        if (userContext == null) throw AccessDeniedException("access denied is not public resource")
-        if (userContext.role == Role.ROLE_ADMIN) {
+        if (passport == null) throw AccessDeniedException("access denied is not public resource")
+        if (passport.role == Role.ROLE_ADMIN) {
             return
         }
 
         val resourceApplicationId = metadata.applicationId
-        val userId = userContext.userId
-
+        val userId = passport.userId
+        val userContext = passport.requireUserContext()
         val isUploadedBy = userId.toString() == metadata.uploadedBy
-        val hasPermission = resourceApplicationId == userContext.signInApplicationId
+        val hasPermission = resourceApplicationId == passport.signInApplicationId
                 && userContext.accessLevel >= metadata.accessLevel
         if (isUploadedBy || hasPermission) return
         throw AccessDeniedException("access denied ${metadata.fileId} for $userId")
