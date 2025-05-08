@@ -90,6 +90,11 @@ dependencies {
 
     // auth
     implementation("org.woo:domain-auth:0.2.2")
+    implementation("org.woo:event:0.0.8")
+
+    // kafka
+    implementation("org.springframework.kafka:spring-kafka")
+    testImplementation("org.springframework.kafka:spring-kafka-test")
 }
 
 extra["springCloudVersion"] = "2023.0.0"

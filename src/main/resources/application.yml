@@ -6,6 +6,8 @@ spring:
       enabled: false
   main:
     web-application-type: reactive
+  kafka:
+    bootstrap-servers: ${KAFKA_HOST}
 #  data:
 #    mongodb:
 #      uri: mongodb://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@${MONGODB_HOST}:27017/file?authSource=admin
