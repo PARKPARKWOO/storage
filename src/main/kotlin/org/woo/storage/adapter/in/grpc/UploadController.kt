@@ -55,7 +55,7 @@ class UploadController(
                 requests.collect { request ->
                     dataReceived = true
                     // 오류 발생 시 사용할 수 있도록 마지막으로 확인된 파일 이름 업데이트
-                    fileNameForCleanup = encodeFilename(request.fileName)
+                    fileNameForCleanup = request.fileName
 
                     if (metadataSaved.compareAndSet(false, true)) {
                         val fileNameForMetadata = fileNameForCleanup ?: UNKNOWN_FILE_NAME
@@ -114,7 +114,7 @@ class UploadController(
     override suspend fun uploadFile(request: FileUploadRequest): FileUploadResponse {
         val fileId = TSID.fast().toLong()
         val metadataJob = scope.async {
-            val fileName = encodeFilename(request.fileName)
+            val fileName = request.fileName
             uploadUseCase.metadata(
                 fileOriginName = fileName,
                 uploadedBy = request.uploadedBy,
@@ -138,9 +138,5 @@ class UploadController(
         return FileUploadResponse.newBuilder()
             .setMessage(fileId)
             .build()
-    }
-
-    fun encodeFilename(filename: String): String {
-        return URLEncoder.encode(filename, StandardCharsets.UTF_8.toString())
     }
 }
