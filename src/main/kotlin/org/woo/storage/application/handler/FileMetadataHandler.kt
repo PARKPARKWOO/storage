@@ -21,4 +21,7 @@ class FileMetadataHandler(
 
     override suspend fun isApplicable(contentType: ContentType): Boolean = contentType == ContentType.FILE
     override suspend fun getMetadata(id: Long): Metadata = fileMetadataRepository.findById(id).awaitSingle()
+    override suspend fun deleteMetadata(id: Long) {
+        fileMetadataRepository.deleteById(id).awaitSingle()
+    }
 }

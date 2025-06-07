@@ -23,4 +23,7 @@ class VideoMetadataHandler(
     override suspend fun isApplicable(contentType: ContentType): Boolean = contentType == ContentType.VIDEO
 
     override suspend fun getMetadata(id: Long): Metadata = videoMetadataRepository.findById(id).awaitSingle()
+    override suspend fun deleteMetadata(id: Long) {
+        videoMetadataRepository.deleteById(id).awaitSingle()
+    }
 }

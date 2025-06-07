@@ -27,4 +27,8 @@ class ImageMetadataHandler(
     override suspend fun getMetadata(id: Long): Metadata {
         return imageMetadataRepository.findById(id).awaitSingle()
     }
+
+    override suspend fun deleteMetadata(id: Long) {
+        imageMetadataRepository.deleteById(id).awaitSingle()
+    }
 }
