@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service
 import org.woo.storage.adapter.out.persistence.cassandra.FileChunkRepository
 import org.woo.storage.domain.file.FileChunk
 import org.woo.storage.domain.file.FileChunkKey
-import java.io.InputStream
+import reactor.core.publisher.Mono
 import java.nio.ByteBuffer
 
 @Service
@@ -32,5 +32,21 @@ class FileDocumentService(
         val id = FileChunkKey(fileId = fileId, chunkIndex = chunkIndex)
         val fileChunk = FileChunk(data = fileBytes, id = id)
         fileChunkRepository.save(fileChunk).awaitSingle()
+    }
+
+    fun deleteFileWithValidation(fileId: Long): Mono<Void> {
+        return fileChunkRepository.findByIdFileId(fileId)
+            .collectList()
+            .flatMap { chunks ->
+                if (chunks.isNotEmpty()) {
+                    fileChunkRepository.deleteByIdFileId(fileId)
+                } else {
+                    Mono.error(RuntimeException("File not found"))
+                }
+            }
+    }
+
+    fun deleteFileByFileId(fileId: Long): Mono<Void> {
+        return fileChunkRepository.deleteByIdFileId(fileId)
     }
 }

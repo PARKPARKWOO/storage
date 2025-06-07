@@ -1,6 +1,7 @@
 package org.woo.storage.application.handler
 
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.reactive.awaitSingle
 import org.flywaydb.core.experimental.MetaData
 import org.springframework.http.MediaType
@@ -20,18 +21,32 @@ abstract class MetadataHandlerTemplate(
 
     protected abstract suspend fun getMetadata(id: Long): Metadata
 
+    protected abstract suspend fun deleteMetadata(id: Long)
+
     private suspend fun saveMetadataType(dto: MetadataDto) {
         val metadataType = MetadataType(dto.fileId, dto.contentType)
         metadataTypeRepository.save(metadataType).awaitSingle()
+    }
+
+    private suspend fun deleteMetadataType(id: Long) {
+        metadataTypeRepository.deleteById(id).awaitSingle()
     }
 
     suspend fun get(id: Long): Metadata {
         return getMetadata(id)
     }
 
-    suspend fun save(dto: MetadataDto): Long = coroutineScope {
-        saveMetadataType(dto)
-        saveMetadata(dto)
-        1L
+    suspend fun save(dto: MetadataDto) = coroutineScope {
+        launch {
+            saveMetadataType(dto)
+        }
+        launch {
+            saveMetadata(dto)
+        }
+    }
+
+    suspend fun delete(id: Long) = coroutineScope {
+        deleteMetadata(id)
+        deleteMetadataType(id)
     }
 }

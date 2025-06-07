@@ -4,17 +4,23 @@ import com.example.grpc.fileupload.FileUploadChunk
 import com.example.grpc.fileupload.FileUploadRequest
 import com.example.grpc.fileupload.FileUploadResponse
 import com.example.grpc.fileupload.FileUploadServiceGrpcKt
+import io.grpc.Status
+import io.grpc.StatusRuntimeException
 import io.hypersistence.tsid.TSID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import net.devh.boot.grpc.server.service.GrpcService
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.context.ApplicationEventPublisher
+import org.woo.apm.log.log
+import org.woo.storage.application.event.FileDeleteEvent
 import org.woo.storage.ports.`in`.UploadUseCase
 import java.net.URLEncoder
 import java.nio.ByteBuffer
@@ -27,15 +33,20 @@ class UploadController(
     private val uploadUseCase: UploadUseCase,
     @Qualifier("grpcThreadPool")
     private val grpcThreadPool: Executor,
+    private val applicationEventPublisher: ApplicationEventPublisher,
 ) : FileUploadServiceGrpcKt.FileUploadServiceCoroutineImplBase() {
+    companion object {
+        const val UNKNOWN_FILE_NAME = "unknown_file"
+    }
     private final val dispatcher = grpcThreadPool.asCoroutineDispatcher()
     val scope = CoroutineScope(dispatcher)
 
     override fun uploadFileStream(requests: Flow<FileUploadChunk>): Flow<FileUploadResponse> = flow {
-        var fileName: String?
+        var fileName: String? = null
         val fileId = TSID.fast().toLong()
         val metadataSaved = AtomicBoolean(false)
         val job = Job()
+
         requests.collect { request ->
             fileName = encodeFilename(request.fileName)
             scope.launch(job) {
@@ -47,11 +58,10 @@ class UploadController(
                 )
             }
 
-            // 메타데이터는 한 번만 저장 (첫 청크에서)
             if (metadataSaved.compareAndSet(false, true)) {
                 scope.launch(job) {
                     uploadUseCase.metadata(
-                        fileOriginName = fileName ?: "unknown_file",
+                        fileOriginName = fileName ?: UNKNOWN_FILE_NAME,
                         uploadedBy = request.uploadedBy,
                         contentLength = request.contentLength,
                         chunkSize = request.chunkSize,
@@ -63,15 +73,23 @@ class UploadController(
                 }
             }
         }
-
-        // 모든 청크 저장 작업이 완료될 때까지 대기
-        job.children.forEach { it.join() }
-
-        emit(
-            FileUploadResponse.newBuilder()
-                .setMessage(fileId)
-                .build()
-        )
+        try {
+            job.children.forEach { it.join() }
+            emit(
+                FileUploadResponse.newBuilder()
+                    .setMessage(fileId)
+                    .build()
+            )
+        } catch (e: Exception) {
+            job.cancelAndJoin()
+            val deleteEvent = FileDeleteEvent(fileId = fileId, fileOriginName = fileName ?: UNKNOWN_FILE_NAME)
+            applicationEventPublisher.publishEvent(deleteEvent)
+            log().warn("Error while uploading file", e)
+            val status = Status.INTERNAL
+                .withDescription("File upload failed: ${e.message}")
+                .withCause(e)
+            throw StatusRuntimeException(status)
+        }
     }
 
     override suspend fun uploadFile(request: FileUploadRequest): FileUploadResponse {
