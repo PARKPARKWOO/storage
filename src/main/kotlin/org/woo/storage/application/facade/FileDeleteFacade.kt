@@ -1,5 +1,7 @@
 package org.woo.storage.application.facade
 
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.stereotype.Service
 import org.woo.storage.application.FileDocumentService
@@ -11,12 +13,13 @@ class FileDeleteFacade(
     private val fileDocumentService: FileDocumentService,
     private val metadataFactory: MetadataFactory,
 ) : DeleteUseCase{
-    override suspend fun file(fileId: Long) {
-        fileDocumentService.deleteFileByFileId(fileId).awaitSingle()
-    }
-
-    override suspend fun metadata(fileOriginName: String, fileId: Long) {
-        val handler = metadataFactory.getHandler(fileOriginName)
-        handler.delete(fileId)
+    override suspend fun delete(fileId: Long): Unit = coroutineScope {
+        launch {
+            val handler = metadataFactory.getHandler(fileId)
+            handler.delete(fileId)
+        }
+        launch {
+            fileDocumentService.deleteFileByFileId(fileId).awaitSingle()
+        }
     }
 }

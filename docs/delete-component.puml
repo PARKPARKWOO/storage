@@ -1,0 +1,37 @@
+@startuml
+' 스타일 정의
+skinparam component {
+  BackgroundColor<<Component>> LightBlue
+  BorderColor<<Component>> #333333
+  FontColor<<Component>> #000000
+}
+
+package "External Clients" {
+  [gRPC Client] as GrpcClient <<Component>>
+  [Kafka Producer] as KafkaProducer <<Component>>
+}
+
+package "FileDeletion Service" {
+  [FileDeleteGrpcService\n(gRPC Server)] as GrpcServer <<Component>>
+  [FileDeleteEventPublisher\n(Spring Event Publisher)] as EventPublisher <<Component>>
+  [FileDeleteEventHandler\n(Spring Event Listener)] as EventListener <<Component>>
+  [FileDeletionService\n(Business Service)] as BusinessService <<Component>>
+  [FileDeleteEventConsumer\n(Kafka Listener)] as KafkaConsumer <<Component>>
+}
+
+database Cassandra
+database MySQL
+
+' gRPC 흐름
+GrpcClient --> GrpcServer : Fire & Forget
+GrpcServer --> EventPublisher : publish DeleteFileEvent(id)
+EventPublisher --> EventListener : onApplicationEvent(DeleteFileEvent)
+EventListener --> BusinessService : deleteFile(id)
+
+' Kafka 흐름
+KafkaProducer --> KafkaConsumer : DeleteFileEvent(topic)
+KafkaConsumer --> BusinessService : deleteFile(id)
+
+BusinessService -> Cassandra
+BusinessService -> MySQL
+@enduml

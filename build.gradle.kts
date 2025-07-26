@@ -51,8 +51,8 @@ dependencies {
     // flyway for db migration
     implementation("org.flywaydb:flyway-core:10.19.0")
     implementation("org.flywaydb:flyway-mysql:10.19.0")
-
-    implementation("org.woo:grpc:0.3.1")
+    implementation("org.woo:http:0.2.1")
+    implementation("org.woo:grpc:0.5.0")
     implementation("io.grpc:grpc-netty-shaded:$grpcVersion")
     // https://mvnrepository.com/artifact/net.devh/grpc-spring-boot-starter
 //    implementation("net.devh:grpc-spring-boot-starter:3.1.0.RELEASE")

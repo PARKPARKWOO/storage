@@ -4,10 +4,14 @@ spring:
   cloud:
     compatibility-verifier:
       enabled: false
+  config:
+    import: classpath:application-topic.yml
   main:
     web-application-type: reactive
   kafka:
     bootstrap-servers: ${KAFKA_HOST}
+    consumer:
+      group-id: ${spring.application.name}
 #  data:
 #    mongodb:
 #      uri: mongodb://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@${MONGODB_HOST}:27017/file?authSource=admin

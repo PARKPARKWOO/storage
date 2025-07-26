@@ -8,33 +8,28 @@ import io.grpc.Status
 import io.grpc.StatusRuntimeException
 import io.hypersistence.tsid.TSID
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import net.devh.boot.grpc.server.service.GrpcService
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.ApplicationEventPublisher
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
 import org.woo.apm.log.log
 import org.woo.storage.application.event.FileDeleteEvent
 import org.woo.storage.ports.`in`.UploadUseCase
-import java.net.URLEncoder
 import java.nio.ByteBuffer
-import java.nio.charset.StandardCharsets
-import java.util.concurrent.Executor
 import java.util.concurrent.atomic.AtomicBoolean
 
 @GrpcService
 class UploadController(
     private val uploadUseCase: UploadUseCase,
     @Qualifier("grpcThreadPool")
-    private val grpcThreadPool: Executor,
+    private val grpcThreadPool: ThreadPoolTaskExecutor,
     private val applicationEventPublisher: ApplicationEventPublisher,
 ) : FileUploadServiceGrpcKt.FileUploadServiceCoroutineImplBase() {
     companion object {
@@ -100,7 +95,7 @@ class UploadController(
             if (e is StatusRuntimeException) {
                 throw e
             }
-            val deleteEvent = FileDeleteEvent(fileId = fileId, fileOriginName = fileNameForCleanup ?: UNKNOWN_FILE_NAME)
+            val deleteEvent = FileDeleteEvent(fileId = fileId)
             applicationEventPublisher.publishEvent(deleteEvent)
             log().warn("Error while uploading file", e)
 

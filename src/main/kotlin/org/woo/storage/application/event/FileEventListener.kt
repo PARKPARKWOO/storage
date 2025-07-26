@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.event.EventListener
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
 import org.springframework.stereotype.Component
+import org.woo.apm.log.log
 import org.woo.storage.application.FileDocumentService
 import org.woo.storage.application.facade.FileDeleteFacade
 
@@ -25,14 +26,8 @@ class FileEventListener(
     @EventListener
     fun listen(event: FileDeleteEvent) {
         scope.launch {
-            //TODO: DLQ 처리 등 고려
-            deleteFacade.metadata(
-                fileOriginName = event.fileOriginName,
-                fileId = event.fileId,
-            )
-        }
-        scope.launch {
-            deleteFacade.file(event.fileId)
+            log().info("Deleting ${event.fileId}")
+            deleteFacade.delete(event.fileId)
         }
     }
 }

@@ -11,7 +11,7 @@ import net.devh.boot.grpc.client.inject.GrpcClient
 import org.springframework.stereotype.Service
 import org.woo.auth.grpc.AuthProto
 import org.woo.auth.grpc.UserInfoServiceGrpcKt
-import org.woo.grpc.TokenInitializeInMetadata
+import org.woo.grpc.interceptor.TokenInitializeInMetadata
 import org.woo.storage.ports.out.AuthGrpcUseCase
 import reactor.core.publisher.Mono
 

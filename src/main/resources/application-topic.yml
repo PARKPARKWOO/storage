@@ -1,0 +1,3 @@
+topics:
+  file:
+    delete: storage.file-id.delete-file.v1

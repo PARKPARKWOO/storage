@@ -1,8 +1,10 @@
 package org.woo.storage.application.factory
 
+import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.http.MediaType
 import org.springframework.http.MediaTypeFactory
 import org.springframework.stereotype.Component
+import org.woo.storage.adapter.out.persistence.mysql.MetadataTypeRepository
 import org.woo.storage.application.dto.MetadataDto
 import org.woo.storage.application.handler.MetadataHandlerTemplate
 import org.woo.storage.domain.metadata.ContentType
@@ -10,6 +12,7 @@ import org.woo.storage.domain.metadata.ContentType
 @Component
 class MetadataFactory(
     private val handlers: List<MetadataHandlerTemplate>,
+    private val metadataTypeRepository: MetadataTypeRepository,
 ) {
     companion object {
         const val DEFAULT_ACCESS_LEVEL = 0
@@ -19,6 +22,14 @@ class MetadataFactory(
     suspend fun getHandler(fileName: String): MetadataHandlerTemplate {
         val mediaType = extractMediaType(fileName)
         val contentType = extractContentType(mediaType)
+        return handlers.find { handler ->
+            handler.isApplicable(contentType)
+        } ?: throw RuntimeException()
+    }
+
+    suspend fun getHandler(fileId: Long): MetadataHandlerTemplate {
+        val mediaType = metadataTypeRepository.findById(fileId).awaitSingle()
+        val contentType = ContentType.valueOf(mediaType.type)
         return handlers.find { handler ->
             handler.isApplicable(contentType)
         } ?: throw RuntimeException()
