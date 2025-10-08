@@ -30,7 +30,7 @@ repositories {
     }
 }
 
-val protobufVersion = "3.23.4"
+val protobufVersion = "3.25.3"
 val grpcVersion = "1.63.0"
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webflux")
