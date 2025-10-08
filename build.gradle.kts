@@ -52,7 +52,7 @@ dependencies {
     implementation("org.flywaydb:flyway-core:10.19.0")
     implementation("org.flywaydb:flyway-mysql:10.19.0")
     implementation("org.woo:http:0.2.1")
-    implementation("org.woo:grpc:0.5.0")
+    implementation("org.woo:grpc:0.6.1")
     implementation("io.grpc:grpc-netty-shaded:$grpcVersion")
     // https://mvnrepository.com/artifact/net.devh/grpc-spring-boot-starter
 //    implementation("net.devh:grpc-spring-boot-starter:3.1.0.RELEASE")
@@ -95,6 +95,11 @@ dependencies {
     // kafka
     implementation("org.springframework.kafka:spring-kafka")
     testImplementation("org.springframework.kafka:spring-kafka-test")
+
+    // https://mvnrepository.com/artifact/io.minio/minio
+    implementation("io.minio:minio:8.5.17")
+
+    implementation("org.apache.tika:tika-core:2.9.+")
 }
 
 extra["springCloudVersion"] = "2023.0.0"

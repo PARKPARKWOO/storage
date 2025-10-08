@@ -5,10 +5,14 @@ import dto.UserContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import net.devh.boot.grpc.client.inject.GrpcClient
 import org.springframework.stereotype.Service
+import org.woo.auth.grpc.ApplicationProto
+import org.woo.auth.grpc.ApplicationProto.ApplicationInfoResponse
+import org.woo.auth.grpc.ApplicationServiceGrpcKt
 import org.woo.auth.grpc.AuthProto
 import org.woo.auth.grpc.UserInfoServiceGrpcKt
 import org.woo.grpc.interceptor.TokenInitializeInMetadata
@@ -19,6 +23,10 @@ import reactor.core.publisher.Mono
 class AuthGrpcService : AuthGrpcUseCase {
     @GrpcClient("auth")
     lateinit var userInfoService: UserInfoServiceGrpcKt.UserInfoServiceCoroutineStub
+
+    @GrpcClient("auth")
+    private lateinit var applicationService: ApplicationServiceGrpcKt.ApplicationServiceCoroutineStub
+
     override fun getUserContext(token: String): Mono<UserContext> {
         return Mono.create { sink ->
             CoroutineScope(Dispatchers.IO).launch {
@@ -40,4 +48,7 @@ class AuthGrpcService : AuthGrpcUseCase {
             }
         }
     }
+
+    override fun getApplicationInfo(): Flow<ApplicationInfoResponse> =
+        applicationService.getApplications(Empty.getDefaultInstance())
 }

@@ -7,6 +7,9 @@ import com.example.grpc.fileupload.FileUploadServiceGrpcKt
 import io.grpc.Status
 import io.grpc.StatusRuntimeException
 import io.hypersistence.tsid.TSID
+import io.minio.GetPresignedObjectUrlArgs
+import io.minio.MinioAsyncClient
+import io.minio.MinioClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
@@ -21,13 +24,14 @@ import org.springframework.context.ApplicationEventPublisher
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
 import org.woo.apm.log.log
 import org.woo.storage.application.event.FileDeleteEvent
+import org.woo.storage.application.facade.UploadFacade
 import org.woo.storage.ports.`in`.UploadUseCase
 import java.nio.ByteBuffer
 import java.util.concurrent.atomic.AtomicBoolean
 
 @GrpcService
 class UploadController(
-    private val uploadUseCase: UploadUseCase,
+    private val uploadUseCase: UploadFacade,
     @Qualifier("grpcThreadPool")
     private val grpcThreadPool: ThreadPoolTaskExecutor,
     private val applicationEventPublisher: ApplicationEventPublisher,

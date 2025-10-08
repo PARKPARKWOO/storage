@@ -36,6 +36,8 @@ spring:
     password: ${CASSANDRA_PASSWORD}
     schema-action: create_if_not_exists
     local-datacenter: datacenter1
+minio:
+  endpoint: ${MINIO_URL}
 
 discovery-host:
   auth: 'discovery:///${spring.profiles.active}-${AUTH_NAME}'
@@ -50,7 +52,6 @@ grpc:
       keepAliveWithoutCalls: true
       negotiationType: plaintext
 
-
 server:
   http2:
     enabled: true
@@ -61,6 +62,7 @@ eureka:
       defaultZone: ${EUREKA_URI}
   instance:
     prefer-ip-address: false
+    hostname: storage
 
 management:
   metrics:
