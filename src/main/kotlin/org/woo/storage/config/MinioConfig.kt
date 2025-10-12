@@ -1,11 +1,15 @@
 package org.woo.storage.config
 
+import io.grpc.ConnectivityState
+import io.grpc.ManagedChannel
 import io.minio.BucketExistsArgs
 import io.minio.MakeBucketArgs
 import io.minio.MinioAsyncClient
 import io.minio.MinioClient
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withTimeout
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.context.properties.ConfigurationProperties
@@ -14,6 +18,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.woo.apm.log.log
 import org.woo.storage.ports.out.AuthGrpcUseCase
+import kotlin.coroutines.resume
 
 @Configuration
 @EnableConfigurationProperties(MinioProps::class)
@@ -38,7 +43,7 @@ class MinioConfig(
 //        if (props.bucket.isBlank()) return@CommandLineRunner
         log().info("Starting Create Minio Bucket")
         runBlocking {
-            getApplicationInfo() // Flow<AppInfo>
+            getApplicationInfo()
                 .collect { app ->
                     val bucketName = app.id.toString().lowercase()
                     try {

@@ -2,12 +2,17 @@ package org.woo.storage.adapter.out.grpc
 
 import com.google.protobuf.Empty
 import dto.UserContext
+import io.grpc.ConnectivityState
+import io.grpc.ManagedChannel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withTimeout
 import net.devh.boot.grpc.client.inject.GrpcClient
 import org.springframework.stereotype.Service
 import org.woo.auth.grpc.ApplicationProto
@@ -18,6 +23,7 @@ import org.woo.auth.grpc.UserInfoServiceGrpcKt
 import org.woo.grpc.interceptor.TokenInitializeInMetadata
 import org.woo.storage.ports.out.AuthGrpcUseCase
 import reactor.core.publisher.Mono
+import kotlin.coroutines.resume
 
 @Service
 class AuthGrpcService : AuthGrpcUseCase {
@@ -26,6 +32,9 @@ class AuthGrpcService : AuthGrpcUseCase {
 
     @GrpcClient("auth")
     private lateinit var applicationService: ApplicationServiceGrpcKt.ApplicationServiceCoroutineStub
+
+    @GrpcClient("auth")
+    private lateinit var authChannel: ManagedChannel
 
     override fun getUserContext(token: String): Mono<UserContext> {
         return Mono.create { sink ->
@@ -50,5 +59,23 @@ class AuthGrpcService : AuthGrpcUseCase {
     }
 
     override fun getApplicationInfo(): Flow<ApplicationInfoResponse> =
-        applicationService.getApplications(Empty.getDefaultInstance())
+        kotlinx.coroutines.flow.flow {
+            withTimeout(15_000) { awaitGrpcReady(authChannel) }
+            emitAll(applicationService.getApplications(Empty.getDefaultInstance()))
+        }
+
+
+
+    suspend fun awaitGrpcReady(channel: ManagedChannel, timeoutMillis: Long = 10_000) {
+        withTimeout(timeoutMillis) {
+            var state = channel.getState(true) // true: 상태변화 알림 등록
+            while (state != ConnectivityState.READY) {
+                state = suspendCancellableCoroutine { cont ->
+                    channel.notifyWhenStateChanged(state) {
+                        cont.resume(channel.getState(true))
+                    }
+                }
+            }
+        }
+    }
 }
