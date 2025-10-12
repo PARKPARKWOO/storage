@@ -23,6 +23,7 @@ import org.woo.auth.grpc.UserInfoServiceGrpcKt
 import org.woo.grpc.interceptor.TokenInitializeInMetadata
 import org.woo.storage.ports.out.AuthGrpcUseCase
 import reactor.core.publisher.Mono
+import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 
 @Service
@@ -59,23 +60,8 @@ class AuthGrpcService : AuthGrpcUseCase {
     }
 
     override fun getApplicationInfo(): Flow<ApplicationInfoResponse> =
-        kotlinx.coroutines.flow.flow {
-            withTimeout(15_000) { awaitGrpcReady(authChannel) }
-            emitAll(applicationService.getApplications(Empty.getDefaultInstance()))
-        }
-
-
-
-    suspend fun awaitGrpcReady(channel: ManagedChannel, timeoutMillis: Long = 10_000) {
-        withTimeout(timeoutMillis) {
-            var state = channel.getState(true) // true: 상태변화 알림 등록
-            while (state != ConnectivityState.READY) {
-                state = suspendCancellableCoroutine { cont ->
-                    channel.notifyWhenStateChanged(state) {
-                        cont.resume(channel.getState(true))
-                    }
-                }
-            }
-        }
-    }
+            applicationService
+                .withWaitForReady()
+                .withDeadlineAfter(1, TimeUnit.MINUTES)
+                .getApplications(Empty.getDefaultInstance())
 }
