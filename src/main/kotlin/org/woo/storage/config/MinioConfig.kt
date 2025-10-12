@@ -5,6 +5,7 @@ import io.minio.MakeBucketArgs
 import io.minio.MinioAsyncClient
 import io.minio.MinioClient
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.runBlocking
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.context.properties.ConfigurationProperties
@@ -36,14 +37,26 @@ class MinioConfig(
     fun ensureBucket(minioClient: MinioClient, asyncClient: MinioAsyncClient, props: MinioProps) = CommandLineRunner {
 //        if (props.bucket.isBlank()) return@CommandLineRunner
         log().info("Starting Create Minio Bucket")
-        getApplicationInfo().map {
-            val bucket = BucketExistsArgs.builder()
-                .bucket(it.id.toString())
-                .build()
-            val exists = minioClient.bucketExists(bucket)
-            if (!exists) {
-                minioClient.makeBucket(MakeBucketArgs.builder().bucket(it.id.toString()).build())
-            }
+        runBlocking {
+            getApplicationInfo() // Flow<AppInfo>
+                .collect { app ->
+                    val bucketName = app.id.toString().lowercase()
+                    try {
+                        val exists = minioClient.bucketExists(
+                            BucketExistsArgs.builder().bucket(bucketName).build()
+                        )
+                        if (!exists) {
+                            minioClient.makeBucket(
+                                MakeBucketArgs.builder().bucket(bucketName).build()
+                            )
+                            log().info("Created bucket: {}", bucketName)
+                        } else {
+                            log().info("Bucket exists: {}", bucketName)
+                        }
+                    } catch (e: Exception) {
+                        log().error("Failed to ensure bucket {}: {}", bucketName, e.message, e)
+                    }
+                }
         }
     }
 
