@@ -21,10 +21,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.coroutineScope
+import org.springframework.beans.factory.annotation.Qualifier
 
 @Service
 class MinioStorageService(
+    @Qualifier("minioClient")
     private val minioClient: MinioClient,
+    @Qualifier("minioAsyncClient")
     private val asyncMinioClient: MinioAsyncClient,
 ) : UploadUseCase {
     suspend fun getPresignUploadUrl(

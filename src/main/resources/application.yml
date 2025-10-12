@@ -38,6 +38,7 @@ spring:
     local-datacenter: datacenter1
 minio:
   endpoint: ${MINIO_URL}
+  internal-endpoint: ${MINIO_INTERNAL_URL}
 
 discovery-host:
   auth: 'discovery:///${spring.profiles.active}-${AUTH_NAME}'

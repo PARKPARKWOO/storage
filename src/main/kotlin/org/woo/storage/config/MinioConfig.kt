@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withTimeout
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.context.properties.ConfigurationProperties
@@ -25,21 +26,32 @@ import kotlin.coroutines.resume
 class MinioConfig(
     private val authGrpcUseCase: AuthGrpcUseCase,
 ) {
-    @Bean
+    @Bean("minioClient")
     fun client(props: MinioProps): MinioClient = MinioClient.builder()
         .endpoint(props.endpoint)
         .credentials(props.accessKey, props.secretKey)
         .build()
 
-    @Bean
+    @Bean("minioAsyncClient")
     fun aClient(props: MinioProps): MinioAsyncClient =
         MinioAsyncClient.builder()
             .endpoint(props.endpoint)
             .credentials(props.accessKey, props.secretKey)
             .build()
 
+    @Bean("minioInternalClient")
+    fun iClient(props: MinioProps): MinioClient =
+        MinioClient.builder()
+            .endpoint(props.internalEndpoint)
+            .credentials(props.accessKey, props.secretKey)
+            .build()
+
     @Bean
-    fun ensureBucket(minioClient: MinioClient, asyncClient: MinioAsyncClient, props: MinioProps) = CommandLineRunner {
+    fun ensureBucket(
+        minioProps: MinioProps,
+        @Qualifier("minioInternalClient")
+        minioInternalClient: MinioClient
+    ) = CommandLineRunner {
 //        if (props.bucket.isBlank()) return@CommandLineRunner
         log().info("Starting Create Minio Bucket")
         runBlocking {
@@ -47,11 +59,11 @@ class MinioConfig(
                 .collect { app ->
                     val bucketName = app.id.toString().lowercase()
                     try {
-                        val exists = minioClient.bucketExists(
+                        val exists = minioInternalClient.bucketExists(
                             BucketExistsArgs.builder().bucket(bucketName).build()
                         )
                         if (!exists) {
-                            minioClient.makeBucket(
+                            minioInternalClient.makeBucket(
                                 MakeBucketArgs.builder().bucket(bucketName).build()
                             )
                             log().info("Created bucket: {}", bucketName)
@@ -67,15 +79,14 @@ class MinioConfig(
 
     private fun getApplicationInfo() =
         authGrpcUseCase.getApplicationInfo()
-
 }
 
 @ConfigurationProperties(prefix = "minio")
 data class MinioProps(
     var endpoint: String = "",
     var accessKey: String = "",
+    var internalEndpoint: String,
     var secretKey: String = "",
-    var bucket: String = "",
     var secure: Boolean = true,
     var connectTimeoutMs: Long = 3000,
     var writeTimeoutMs: Long = 30000,
