@@ -11,6 +11,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.woo.apm.log.log
 import org.woo.storage.ports.out.AuthGrpcUseCase
 
 @Configuration
@@ -34,13 +35,14 @@ class MinioConfig(
     @Bean
     fun ensureBucket(minioClient: MinioClient, asyncClient: MinioAsyncClient, props: MinioProps) = CommandLineRunner {
 //        if (props.bucket.isBlank()) return@CommandLineRunner
+        log().info("Starting Create Minio Bucket")
         getApplicationInfo().map {
             val bucket = BucketExistsArgs.builder()
-                .bucket(it.name)
+                .bucket(it.id.toString())
                 .build()
             val exists = minioClient.bucketExists(bucket)
             if (!exists) {
-                minioClient.makeBucket(MakeBucketArgs.builder().bucket(it.name).build())
+                minioClient.makeBucket(MakeBucketArgs.builder().bucket(it.id.toString()).build())
             }
         }
     }

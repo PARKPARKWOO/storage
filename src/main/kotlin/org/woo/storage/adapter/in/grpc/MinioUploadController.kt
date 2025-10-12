@@ -10,6 +10,7 @@ import com.example.grpc.fileupload.UploadFileResponse
 import com.google.protobuf.Timestamp
 import io.minio.http.Method
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import net.devh.boot.grpc.server.service.GrpcService
 import org.woo.storage.application.MinioStorageService
 import java.time.Instant
@@ -58,7 +59,7 @@ class MinioUploadController(
     }
 
     override suspend fun uploadFile(requests: Flow<UploadFileRequest>): UploadFileResponse {
-        return super.uploadFile(requests)
+        return minioService.uploadStream(requests)
     }
 
     private fun getExpiresAt(expiry: Int): Timestamp {
