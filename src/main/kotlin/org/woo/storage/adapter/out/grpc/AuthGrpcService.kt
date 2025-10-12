@@ -34,9 +34,6 @@ class AuthGrpcService : AuthGrpcUseCase {
     @GrpcClient("auth")
     private lateinit var applicationService: ApplicationServiceGrpcKt.ApplicationServiceCoroutineStub
 
-    @GrpcClient("auth")
-    private lateinit var authChannel: ManagedChannel
-
     override fun getUserContext(token: String): Mono<UserContext> {
         return Mono.create { sink ->
             CoroutineScope(Dispatchers.IO).launch {
