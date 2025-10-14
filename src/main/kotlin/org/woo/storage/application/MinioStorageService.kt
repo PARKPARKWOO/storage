@@ -2,6 +2,7 @@ package org.woo.storage.application
 
 import com.example.grpc.fileupload.UploadFileRequest
 import com.example.grpc.fileupload.UploadFileResponse
+import io.minio.GetObjectArgs
 import io.minio.GetPresignedObjectUrlArgs
 import io.minio.MinioAsyncClient
 import io.minio.MinioClient
@@ -25,7 +26,7 @@ import org.springframework.beans.factory.annotation.Qualifier
 
 @Service
 class MinioStorageService(
-    @Qualifier("minioClient")
+    @Qualifier("minioInternalClient")
     private val minioClient: MinioClient,
     @Qualifier("minioAsyncClient")
     private val asyncMinioClient: MinioAsyncClient,
@@ -152,21 +153,27 @@ class MinioStorageService(
             offset += chunk.size
         }
         
-        // MinIO에 업로드
-        val inputStream = ByteArrayInputStream(completeData)
-        val putArgs = PutObjectArgs.builder()
-            .bucket(bucket)
-            .`object`(objectKey)
-            .contentType(contentType)
-            .stream(inputStream, totalSize, -1)
-            .apply {
-                if (metadata.isNotEmpty()) {
-                    userMetadata(metadata)
-                }
+        // MinIO에 업로드 (블로킹 I/O를 IO 디스패처에서 실행)
+        val result = withContext(Dispatchers.IO) {
+            try {
+                val inputStream = ByteArrayInputStream(completeData)
+                val putArgs = PutObjectArgs.builder()
+                    .bucket(bucket)
+                    .`object`(objectKey)
+                    .contentType(contentType)
+                    .stream(inputStream, totalSize, -1)
+                    .apply {
+                        if (metadata.isNotEmpty()) {
+                            userMetadata(metadata)
+                        }
+                    }
+                    .build()
+                
+                minioClient.putObject(putArgs)
+            } catch (e: Exception) {
+                throw RuntimeException("MinIO upload failed for bucket=$bucket, key=$objectKey: ${e.message}", e)
             }
-            .build()
-        
-        val result = minioClient.putObject(putArgs)
+        }
         
         return UploadFileResponse.newBuilder()
             .setBucket(bucket)
