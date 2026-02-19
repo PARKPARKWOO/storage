@@ -8,6 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.springframework.core.io.Resource
 import org.springframework.core.io.buffer.DataBuffer
+import org.springframework.http.ContentDisposition
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -25,6 +26,7 @@ import org.woo.storage.domain.metadata.Metadata
 import org.woo.storage.ports.`in`.UploadUseCase
 import reactor.core.publisher.Flux
 import java.nio.ByteBuffer
+import java.nio.charset.StandardCharsets
 
 @RestController
 @RequestMapping("/api/v1/download")
@@ -35,12 +37,20 @@ class DownloadController(
     @GetMapping("/{id}")
     suspend fun download(
         @PathVariable("id") id: Long,
+        @RequestParam(name = "download", defaultValue = "false")
+        download: Boolean,
         @AuthenticationUser(isRequired = false)
         passport: Passport?,
     ): ResponseEntity<Flux<DataBuffer>> {
         val result: Pair<Flux<DataBuffer>, Metadata> = retrieveFacade.retrieveResource(id, passport)
+        val disposition = ContentDisposition
+            .builder(if (download) "attachment" else "inline")
+            .filename(result.second.fileName, StandardCharsets.UTF_8)
+            .build()
+            .toString()
+
         return ResponseEntity.ok()
-            .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"${result.second.fileName}\"")
+            .header(HttpHeaders.CONTENT_DISPOSITION, disposition)
             .contentType(MediaType.parseMediaType(result.second.contentType))
             .body(result.first)
     }

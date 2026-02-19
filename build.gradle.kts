@@ -52,7 +52,7 @@ dependencies {
     implementation("org.flywaydb:flyway-core:10.19.0")
     implementation("org.flywaydb:flyway-mysql:10.19.0")
     implementation("org.woo:http:0.2.1")
-    implementation("org.woo:grpc:0.6.1")
+    implementation("org.woo:grpc:0.7.4")
     implementation("io.grpc:grpc-netty-shaded:$grpcVersion")
     // https://mvnrepository.com/artifact/net.devh/grpc-spring-boot-starter
 //    implementation("net.devh:grpc-spring-boot-starter:3.1.0.RELEASE")
@@ -83,7 +83,7 @@ dependencies {
     // for metric
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     runtimeOnly("io.micrometer:micrometer-registry-prometheus")
-    implementation("org.woo:apm:0.2.3")
+    implementation("org.woo:apm:0.2.7")
 
     // log-loki
     implementation("com.github.loki4j:loki-logback-appender:1.5.1")

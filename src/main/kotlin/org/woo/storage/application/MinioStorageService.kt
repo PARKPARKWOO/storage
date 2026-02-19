@@ -7,6 +7,7 @@ import io.minio.GetPresignedObjectUrlArgs
 import io.minio.MinioAsyncClient
 import io.minio.MinioClient
 import io.minio.PutObjectArgs
+import io.minio.RemoveObjectArgs
 import io.minio.http.Method
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
@@ -23,10 +24,11 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.coroutineScope
 import org.springframework.beans.factory.annotation.Qualifier
+import org.woo.storage.ports.`in`.DeleteUseCase
 
 @Service
 class MinioStorageService(
-    @Qualifier("minioInternalClient")
+    @Qualifier("minioClient")
     private val minioClient: MinioClient,
     @Qualifier("minioAsyncClient")
     private val asyncMinioClient: MinioAsyncClient,
@@ -153,28 +155,20 @@ class MinioStorageService(
             offset += chunk.size
         }
         
-        // MinIO에 업로드 (블로킹 I/O를 IO 디스패처에서 실행)
-        val result = withContext(Dispatchers.IO) {
-            try {
-                val inputStream = ByteArrayInputStream(completeData)
-                val putArgs = PutObjectArgs.builder()
-                    .bucket(bucket)
-                    .`object`(objectKey)
-                    .contentType(contentType)
-                    .stream(inputStream, totalSize, -1)
-                    .apply {
-                        if (metadata.isNotEmpty()) {
-                            userMetadata(metadata)
-                        }
-                    }
-                    .build()
-                
-                minioClient.putObject(putArgs)
-            } catch (e: Exception) {
-                throw RuntimeException("MinIO upload failed for bucket=$bucket, key=$objectKey: ${e.message}", e)
+        // MinIO에 업로드
+        val inputStream = ByteArrayInputStream(completeData)
+        val putArgs = PutObjectArgs.builder()
+            .bucket(bucket)
+            .`object`(objectKey)
+            .contentType(contentType)
+            .stream(inputStream, totalSize, -1)
+            .apply {
+                if (metadata.isNotEmpty()) {
+                    userMetadata(metadata)
+                }
             }
-        }
-        
+            .build()
+        val result = minioClient.putObject(putArgs)
         return UploadFileResponse.newBuilder()
             .setBucket(bucket)
             .setObjectKey(objectKey)
