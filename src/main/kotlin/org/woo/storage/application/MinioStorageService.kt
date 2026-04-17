@@ -33,6 +33,18 @@ class MinioStorageService(
     @Qualifier("minioAsyncClient")
     private val asyncMinioClient: MinioAsyncClient,
 ) : UploadUseCase {
+    suspend fun deleteObject(
+        bucket: String,
+        objectKey: String,
+    ) {
+        minioClient.removeObject(
+            RemoveObjectArgs.builder()
+                .bucket(bucket)
+                .`object`(objectKey)
+                .build()
+        )
+    }
+
     suspend fun getPresignUploadUrl(
         bucket: String,
         objectKey: String,
