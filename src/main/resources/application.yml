@@ -79,4 +79,5 @@ mysql:
   host: ${RDBMS_URL}
 
 pyroscope:
-  address: ${PYROSCOPE_SERVER_ADDRESS}
+  server:
+    address: ${PYROSCOPE_SERVER_ADDRESS}
